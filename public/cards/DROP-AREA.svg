@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   width="63.000198mm"
+   height="88.000275mm"
+   viewBox="0 0 238.11099 332.59947"
+   version="1.1"
+   id="svg8">
+  <rect
+     width="238.11099"
+     height="332.59947"
+     style="fill:#77AB72;stroke:none"
+     rx="30"
+     ry="30"/>
+  <rect
+     x="3"
+     y="3"
+     width="232.11099"
+     height="326.59947"
+     style="fill:none;stroke:#FDFEFE;stroke-width:3;stroke-dasharray:10,3;"
+     rx="27"
+     ry="27"/>
+  <text
+     x="50%"
+     y="50%"
+     dominant-baseline="middle"
+     text-anchor="middle"
+     style="font-family:'Rockwell', sans-serif;font-size:34px;fill:#FDFEFE">
+    DROP
+  </text>
+</svg>
