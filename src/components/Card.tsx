@@ -1,10 +1,10 @@
-import React from 'react';
 import { Rank, Suit, CardType } from "../lib";
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
+import { CARD_BACK_SVG_PATH, DROP_AREA_SVG_PATH, createCardSVGPath } from '../utils';
 
 export interface CardProps {
-    card: CardType;
+    card?: CardType;
     showBack?: boolean;
     dropArea?: boolean;
     numImages?: number;
@@ -14,7 +14,7 @@ export interface CardProps {
 
 export const StyledCard = styled(motion.img)<{ $hidden?: boolean; $numImages?: number;}>`
   height: 100%;
-  max-width: ${({ $numImages }) => ($numImages ? `calc(100% / ${$numImages})` : '100%')};
+  max-width: ${({ $numImages }) => ($numImages ? `calc(90% / ${$numImages})` : '100%')};
 `;
 
 const getCardAnimation = (index: number, selected: boolean) => {
@@ -42,8 +42,7 @@ const getCardAnimation = (index: number, selected: boolean) => {
   }
 
 export default function Card({card, showBack, dropArea, numImages, index, selected = false}: CardProps) {
-    console.log(card);
-    const src = showBack 
+    const src = showBack
         ? CARD_BACK_SVG_PATH
         : dropArea
             ? DROP_AREA_SVG_PATH
@@ -90,17 +89,3 @@ export default function Card({card, showBack, dropArea, numImages, index, select
         />
       );
 }
-
-function createCardSVGPath(card: CardType) {
-    return (
-      CARDS_PREFIX_PATH +
-      card.suit +
-      "-" +
-      card.value +
-      ".svg"
-    );
-  }
-
-const CARDS_PREFIX_PATH = "/cards/";
-const CARD_BACK_SVG_PATH = `${CARDS_PREFIX_PATH}BACK.svg`;
-const DROP_AREA_SVG_PATH = `${CARDS_PREFIX_PATH}DROP-AREA.svg`;

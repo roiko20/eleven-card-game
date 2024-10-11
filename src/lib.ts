@@ -32,6 +32,12 @@ export enum Suit {
     suit: string;
 }
 
+export interface Score {
+    points: number;
+    clubs: number;
+    bonus: number;
+}
+
 export const cardsData = [
     {
         "code": "QS",

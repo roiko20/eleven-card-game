@@ -1,47 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&family=Patua+One&display=swap');
 
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 body {
   margin: 0;
-  background: rgb(64,124,55);
-  background: linear-gradient(90deg, rgba(64,124,55,1) 0%, rgba(89,150,86,1) 50%, rgba(64,124,55,1) 100%);
+  /* background: rgb(64,124,55);
+  background: linear-gradient(90deg, rgba(64,124,55,1) 0%, rgba(89,150,86,1) 50%, rgba(64,124,55,1) 100%); */
+  background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%);
   font-family: "Patua One", serif;
 }
