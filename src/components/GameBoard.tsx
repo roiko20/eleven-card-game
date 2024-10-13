@@ -35,6 +35,7 @@ const PlayerHandContainer = styled(motion.div)`
 
 const FlopContainer = styled(motion.div)<{ $numImages: number;}>`
     display: flex;
+    align-items: center;
     justify-content: center;
     gap: 4px;
     grid-column-start: ${({ theme, $numImages }) => ($numImages > 6 && (theme?.isMdScreen ? 'span 1': 'span 2'))};

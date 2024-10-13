@@ -84,6 +84,5 @@
     }
   ],
   "start_url": ".",
-  "display": "standalone",
-  "background_color": "linear-gradient(to top, #0ba360 0%, #3cba92 100%)"
+  "display": "standalone"
 }

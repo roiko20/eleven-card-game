@@ -1,14 +1,17 @@
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import './App.css';
 import { CardType, cardsData } from './lib';
 import GameBoard from './components/GameBoard';
 import useScreenSize from './hooks/useScreenSize';
-import { CARD_BACK_SVG_PATH, DROP_AREA_SVG_PATH, createCardSVGPath } from './utils';
+import { CARD_BACK_SVG_PATH, DROP_AREA_SVG_PATH, createCardSVGPath, fetchDeck } from './utils';
 import Welcome from './components/Welcome';
 import { ThemeProvider } from 'styled-components';
 import Tilt from './components/Tilt';
 import Loader from './components/Loader';
+import elevenMachine from './state/elevenMachine';
+import { useMachine } from '@xstate/react';
+import { ElevenMachineContext } from './context/AppContext';
 
 const defaultTheme = {
   isSmScreen: false,
@@ -26,37 +29,42 @@ const preloadImage = (src: string) => {
 };
 
 function App() {
-  const [cards, setCards] = useState<CardType[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [snapshot, send] = useMachine(elevenMachine);
+  // const [cards, setCards] = useState<CardType[]>([]);
+  // const [loading, setLoading] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const loadResources = async () => {
-      try {
-        // draw deck
-        const response = await fetch('https://deckofcardsapi.com/api/deck/new/draw/?count=52');
-        const data = await response.json();
-        setCards(data.cards); // Store fetched cards
-
-        // preload SVGs
-        const cardImagePromises = data.cards.map((card: any) => preloadImage(createCardSVGPath(card)));
-        cardImagePromises.push(preloadImage(DROP_AREA_SVG_PATH));
-        cardImagePromises.push(preloadImage(CARD_BACK_SVG_PATH));
-        await Promise.all(cardImagePromises);
-
-        setLoading(false);
-      }
-      catch (error) {
-      console.error('Error loading resources:', error);
-      setLoading(false); // Set loading to false even on error to prevent infinite loading
-    }
-  };
-
-  loadResources();
-  }, []);
-
+  // console.log('snapshot:');
+  // console.log(snapshot);
+  
   const screenSize = useScreenSize();
+
+  const snapshot = ElevenMachineContext.useSelector((state) => state);
+
+  // useEffect(() => {
+  //   const loadResources = async () => {
+  //     try {
+  //       // draw deck
+  //       const cards = await fetchDeck();
+  //       setCards(cards); // Store fetched cards
+
+  //       // preload SVGs
+  //       const cardImagePromises = cards.map((card: CardType) => preloadImage(createCardSVGPath(card)));
+  //       cardImagePromises.push(preloadImage(DROP_AREA_SVG_PATH));
+  //       cardImagePromises.push(preloadImage(CARD_BACK_SVG_PATH));
+  //       await Promise.all(cardImagePromises);
+
+  //       setLoading(false);
+  //     }
+  //     catch (error) {
+  //     console.error('Error loading resources:', error);
+  //     setLoading(false); // Set loading to false even on error to prevent infinite loading
+  //   }
+  // };
+
+  // loadResources();
+  // }, []);
 
   const openMenu = () => {
     setIsMenuOpen(true);
@@ -70,24 +78,31 @@ function App() {
     setGameStarted(true);
   }
 
-  const content =
-  isMenuOpen || !gameStarted
-    ? <Welcome
-        onStartGame={startGame}
-        showBackButton={isMenuOpen}
-        onBackClick={closeMenu}
-      />
-    : loading
-      ? <Loader />
-      : <GameBoard
-          cards={cards}
-          onMenuClick={openMenu}
-        />;
+  // const content =
+  // isMenuOpen || !gameStarted
+  //   ? <Welcome
+  //       onStartGame={startGame}
+  //       showBackButton={isMenuOpen}
+  //       onBackClick={closeMenu}
+  //     />
+  //   : loading
+  //     ? <Loader />
+  //     : <GameBoard
+  //         cards={cards}
+  //         onMenuClick={openMenu}
+  //       />;
 
   return (
     <ThemeProvider theme={{ ...defaultTheme, ...screenSize }}>
-      {screenSize.isSmScreen && <Tilt/>}
-      {content}
+       {screenSize.isSmScreen && <Tilt/>}
+        {snapshot.matches('welcome') &&
+          <Welcome
+            onBackClick={closeMenu}
+          />
+        }
+        {snapshot.matches('startGame') &&
+          <GameBoard cards={snapshot.context.cards} onMenuClick={() => console.log('menu')}/>
+        }
     </ThemeProvider>
   );
 }

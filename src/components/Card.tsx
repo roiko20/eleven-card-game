@@ -13,7 +13,6 @@ export interface CardProps {
 }
 
 export const StyledCard = styled(motion.img)<{ $hidden?: boolean; $numImages?: number;}>`
-  height: 100%;
   max-width: ${({ $numImages }) => ($numImages ? `calc(90% / ${$numImages})` : '100%')};
 `;
 
@@ -41,45 +40,13 @@ const getCardAnimation = (index: number, selected: boolean) => {
     }
   }
 
-export default function Card({card, showBack, dropArea, numImages, index, selected = false}: CardProps) {
+export default function Card({ card, showBack, dropArea, numImages, index, selected = false }: CardProps) {
     const src = showBack
         ? CARD_BACK_SVG_PATH
         : dropArea
             ? DROP_AREA_SVG_PATH
             : createCardSVGPath(card);
     return (
-        // <div
-        // //   className="relative h-card-height w-card-width"
-        // //   style={{ zIndex: props.z ?? "unset" }}
-        // >
-        //   {/* <AnimatePresence>
-        //     {props.withSelector && (
-        //       <Selector
-        //         onClick={(n) => props.onClick?.(props.card, n)}
-        //         selectorMax={props.selectorMax ?? 4}
-        //       />
-        //     )}
-        //   </AnimatePresence> */}
-    
-        //   {/* <motion.img
-        //     onClick={() => props.onClick?.(props.card)}
-        //     layoutId={props.card?.toString()}
-        //     animate={{
-        //       filter: props.grayOut ? "contrast(0.55)" : "contrast(1)",
-        //       transition: {
-        //         duration: 1.5,
-        //       },
-        //     }}
-        //     className={clsx(
-        //       "select-none",
-        //       !props.noShadow && "shadow-lg shadow-zinc-500/40 drop-shadow-xl",
-        //       isFace && "rounded-lg border-white bg-white p-1",
-        //       props.withSelector && "rounded-t-none rounded-b-lg bg-white"
-        //     )}
-        //     src={src}
-        //   /> */}
-        //   <img src={src} />
-        // </div>
         <StyledCard
             src={src}
             $numImages={numImages}

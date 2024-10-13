@@ -1,12 +1,10 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
 import styled from "styled-components";
 import Button from "./Button";
 import Modal from "./Modal";
+import { ElevenMachineContext } from "../context/AppContext";
 
 interface WelcomeProps {
-    onStartGame: () => void;
-    showBackButton: boolean;
     onBackClick: () => void;
 }
 
@@ -31,8 +29,12 @@ const StyledIcon = styled(motion.img)`
     width: 6rem;
 `;
 
-export default function Welcome({onStartGame, showBackButton, onBackClick}: WelcomeProps) {
-    const [showRules, setShowRules] = useState(false);
+export default function Welcome({ onBackClick }: WelcomeProps) {
+    const elevenActorRef = ElevenMachineContext.useActorRef();
+    const state = ElevenMachineContext.useSelector((state) => state);
+    console.log('snapshot');
+    console.log(state);
+    const { gameInProgress } = state.context;
 
     return (
         <StyledOverlay       
@@ -43,7 +45,7 @@ export default function Welcome({onStartGame, showBackButton, onBackClick}: Welc
             <h1>Eleven</h1>
             <StyledActions>
                 {
-                    showBackButton &&
+                    gameInProgress &&
                         <Button
                             text={"BACK TO GAME"}
                             color={'linear-gradient(-225deg, #E0C3FC 0%, #B19FFF 48%, #ECA1FE 100%)'}
@@ -53,17 +55,17 @@ export default function Welcome({onStartGame, showBackButton, onBackClick}: Welc
                 <Button
                     text={"NEW GAME"}
                     color={'linear-gradient(-225deg, #DFFFCD 0%, #90F9C4 48%, #39F3BB 100%)'}
-                    onClick={onStartGame}
+                    onClick={() => elevenActorRef.send({ type: 'user.play' })}
                 />
                 <Button
                     text={"RULES"}
                     color={'linear-gradient(to right, #4facfe 0%, #00f2fe 100%)'}
-                    onClick={() => setShowRules(true)}
+                    onClick={() => elevenActorRef.send({ type: 'user.showRules' })}
                 />
             </StyledActions>
             <Modal
-                open={showRules}
-                onClose={() => setShowRules(false)}
+                open={state.matches({ welcome: 'rulesModal' })}
+                onClose={() => elevenActorRef.send({ type: 'user.hideRules' })}
             />
         </StyledOverlay>
     )
