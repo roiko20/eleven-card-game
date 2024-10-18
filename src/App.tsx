@@ -95,13 +95,14 @@ function App() {
   return (
     <ThemeProvider theme={{ ...defaultTheme, ...screenSize }}>
        {screenSize.isSmScreen && <Tilt/>}
-        {snapshot.matches('welcome') &&
+        {(snapshot.matches('welcome')
+          || snapshot.matches('menu')) &&
           <Welcome
             onBackClick={closeMenu}
           />
         }
         {snapshot.matches('startGame') &&
-          <GameBoard cards={snapshot.context.cards} onMenuClick={() => console.log('menu')}/>
+          <GameBoard onMenuClick={() => console.log('menu')}/>
         }
     </ThemeProvider>
   );

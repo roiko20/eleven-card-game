@@ -32,8 +32,7 @@ const StyledIcon = styled(motion.img)`
 export default function Welcome({ onBackClick }: WelcomeProps) {
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
-    console.log('snapshot');
-    console.log(state);
+
     const { gameInProgress } = state.context;
 
     return (
@@ -49,7 +48,7 @@ export default function Welcome({ onBackClick }: WelcomeProps) {
                         <Button
                             text={"BACK TO GAME"}
                             color={'linear-gradient(-225deg, #E0C3FC 0%, #B19FFF 48%, #ECA1FE 100%)'}
-                            onClick={onBackClick}
+                            onClick={() => elevenActorRef.send({ type: 'user.closeMenu' })}
                         />
                 }
                 <Button

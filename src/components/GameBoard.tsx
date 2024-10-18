@@ -5,14 +5,16 @@ import { CardType } from '../lib';
 import Card from './Card';
 import Pile from './Pile';
 import Score from './Score';
-import DropArea from './DropArea';
 import Info from './Info';
 import Menu from './Menu';
+import { ElevenMachineContext } from '../context/AppContext';
+import { isCardInCards } from '../utils';
+import Flop from './Flop';
 
 const GameBoardContainer = styled(motion.div)`
     padding: ${({ theme }) => (theme?.isMdScreen ? '16px 16px 16px 4px' : '32px 32px 32px 16px')};
     display: grid;
-    grid-template-rows: 22% 36% 30%;
+    grid-template-rows: 22% 35% 31%;
     grid-template-columns: ${({ theme }) => (!theme?.isLgScreen ? '12% 88%': '13% auto 13%')};
     box-sizing: border-box;
     height: 100vh;
@@ -42,49 +44,49 @@ const FlopContainer = styled(motion.div)<{ $numImages: number;}>`
 `;
 
 export interface GameBoardProps {
-    cards: CardType[];
     onMenuClick: () => void;
 }
 
-export default function GameBoard({ cards, onMenuClick }: GameBoardProps) {
+export default function GameBoard({ onMenuClick }: GameBoardProps) {
+    const elevenActorRef = ElevenMachineContext.useActorRef();
+    const state = ElevenMachineContext.useSelector((state) => state);
+
+    const { playerCards, flopCards, botCards, playerSidePile, botSidePile, playerFlopSelection, playerHandSelection } = state.context;
+
     const theme = useContext(ThemeContext);
-    return <GameBoardContainer>
-        <Score cards={cards} isPlayerScore={false}/>
+
+    console.log('state');
+    console.log(state);
+    
+    return <GameBoardContainer onClick={() => elevenActorRef.send({ type: 'user.cancelSelection'})}>
+        <Score isPlayerScore={false}/>
         <HandContainer>
-        {cards.slice(0,4).map((card: CardType, index: number) => (
+        {botCards.map((card: CardType, index: number) => (
             <Card
                 key={card.code}
                 card={card}
-                showBack={true}
+                // showBack={true}
                 index={index}
             />
         ))}
         </HandContainer>
         <Info isLastHand={false} />
-        <FlopContainer $numImages={16}>
-            <DropArea numImages={16} />
-            {cards.slice(0,15).map((card: CardType, index: number) => (
-                <Card
-                    key={index}
-                    card={card}
-                    numImages={16}
-                    index={index}
-                />
-            ))}
-        </FlopContainer>
-        {theme?.isLgScreen && <Pile cards={cards.slice(0,4)} isPlayerSidePile={false} />}
-        <Score cards={cards} isPlayerScore={true}/>
+        <Flop />
+        {theme?.isLgScreen && <Pile cards={botSidePile} isPlayerSidePile={false} />}
+        <Score isPlayerScore={true}/>
         <PlayerHandContainer>
-        {cards.slice(0,4).map((card: CardType, index: number) => (
+        {playerCards.map((card: CardType, index: number) => (
             <Card
                 key={card.code}
                 card={card}
                 index={index}
                 numImages={4}
+                onCardClick={() => elevenActorRef.send({type: 'user.selectHandCard', card: card})}
+                selected={card.code === playerHandSelection?.code}
             />
         ))}
         </PlayerHandContainer>
-        {theme?.isLgScreen && <Pile cards={cards.slice(0, 4)} isPlayerSidePile={true} />}
-        <Menu handleClick={onMenuClick}/>
+        {theme?.isLgScreen && <Pile cards={playerSidePile} />}
+        <Menu handleClick={() => elevenActorRef.send({ type: 'user.openMenu' })}/>
     </GameBoardContainer>;
 };

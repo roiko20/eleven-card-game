@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 interface PileProps {
     cards: CardType[];
-    isPlayerSidePile: boolean;
+    isPlayerSidePile?: boolean;
 }
 
 const PileContainer = styled(motion.div)<{ $isPlayerSidePile?: boolean; }>`
@@ -20,11 +20,12 @@ const PileContainer = styled(motion.div)<{ $isPlayerSidePile?: boolean; }>`
 const PileCard = styled(motion.img)<{ index: number; $isPlayerSidePile?: boolean; }>`
     position: absolute;
     right: ${({ index }) => (`${index * -2.5}px`)};
-    height: 100%;
-    box-shadow: 0px 0px 2px rgba(0,0,0,0.75);
+    height: 99%;
+    border-radius: 18px;
+    box-shadow: 1px 1px 6px #424242;
 `;
 
-const Pile: React.FC<PileProps> = ({ cards, isPlayerSidePile }) => {
+const Pile: React.FC<PileProps> = ({ cards, isPlayerSidePile = true }) => {
   const previousCardsLengthRef = useRef(0);
   useEffect(() => {
     // Update ref with the current length of cards after render
@@ -37,10 +38,10 @@ const Pile: React.FC<PileProps> = ({ cards, isPlayerSidePile }) => {
         {/* Render the side pile cards */}
         {cards.map((card: CardType, index: number) => (
             <PileCard
-                key={index}
+              key={index}
               index={index}
-              initial={{ opacity: 0, x: "-50vw", y: isPlayerSidePile ? "-50vh" : "50vh" }}
-              animate={{ opacity: 1, x: 0, y: 0, transition: { delay: 0.2 * (index - previousCardsLengthRef.current), duration: 0.2, type: "tween"}}}
+              initial={{ opacity: 0, x: "-40vw", y: isPlayerSidePile ? "-40vh" : "40vh" }}
+              animate={{ opacity: 1, x: 0, y: 0, transition: { delay: 0.2 * (index - previousCardsLengthRef.current), duration: 0.3}}}
               src={'/cards/BACK.svg'} 
               alt={card.code}
               $isPlayerSidePile={isPlayerSidePile}

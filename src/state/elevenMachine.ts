@@ -2,52 +2,65 @@ import { assertEvent, assign, fromPromise, not, setup } from 'xstate';
 import { CardType } from "../lib";
 // import { RickCharacters } from './services/RickApi';
 // import { getRandomNumber } from './common/constants';
-import { drawCardsFromDeck, fetchDeck, fetchResources } from '../utils';
+import { compareCards, dealCards, fetchDeck, fetchResources, isCardInCards, isValidJackMove, isValidMove, removeCardsFromCards, selectNonRoyaltyCards } from '../utils';
 
-const elevenMachine = setup({
-  types: {
-    events: {} as
-      | { type: 'user.showRules'}
-      | { type: 'user.play' }
-      | { type: 'user.hideRules' }
-      | { type: 'user.reject' }
-      | { type: 'user.accept' }
-      | {
-          type: 'user.selectAnswer';
-          answer: number;
-        }
-      | { type: 'user.nextQuestion' }
-      | { type: 'user.selectHandCard' }
-      | { type: 'user.playAgain' },
-    context: {} as {
-      cards: CardType[];
+interface ElevenContext {
+  cards: CardType[];
       hasLoaded: boolean;
       error: string;
       gameInProgress: boolean;
       round: number;
-      turn: 'bot' | 'player';
+      isPlayerTurn: boolean;
       playerPoints: number;
       playerClubs: number;
       playerCards: CardType[];
       playerSidePile: CardType[];
-      playerSelection: CardType[];
+      playerHandSelection: CardType | null;
+      playerFlopSelection: CardType[],
       flopCards: CardType[];
       botPoints: number;
       botClubs: number;
       botCards: CardType[];
       botSidePile: CardType[];
       botSelection: CardType[];
+}
+
+type ElevenEvents =
+  | { type: 'user.play' }
+  | { type: 'user.showRules'}
+  | { type: 'user.hideRules' }
+  | { type: 'user.openMenu' }
+  | { type: 'user.closeMenu'}
+  | { type: 'user.selectHandCard', card: CardType }
+  | { type: 'user.selectFlopCard', card: CardType }
+  | { type: 'user.dropCard' }
+  | { type: 'user.cancelSelection' }
+  | { type: 'user.reject' }
+  | { type: 'user.accept' }
+  | {
+      type: 'user.selectAnswer';
+      answer: number;
     }
+  | { type: 'user.nextQuestion' }
+  | { type: 'user.playAgain' };
+
+
+const elevenMachine = setup({
+  types: {
+    events: {} as ElevenEvents,
+    context: {} as ElevenContext
   },
   guards: {
-    // isAnswerCorrect: ({ context, event }) => {
-    //   assertEvent(event, 'user.selectAnswer');
-    //   if (!context.currentCharacter) return false;
-    //   return event.answer === context.currentCharacter.id;
-    // },
+    isValidMove: ({ context, event }) => {
+      // assertEvent(event, 'user.selectAnswer');
+      return isValidMove(context.playerHandSelection, context.playerFlopSelection);
+    },
+    isValidJackMove: ({ context }) => isValidJackMove(context.playerHandSelection, context.flopCards),
+    isPlayerHandCardSelected: ({ context }) => !!context.playerHandSelection,
     hasLostGame: ({ context }) => {
       return context.botPoints >= 104;
     },
+    isBotTurn: ({ context }) => !context.isPlayerTurn,
     hasWonGame: ({ context }) => {
       return context.playerPoints >= 104;
     }
@@ -57,12 +70,13 @@ const elevenMachine = setup({
     newGame: assign({
       cards: [], // TODO: add new deck cards
       round: 0,
-      turn: 'player',
+      isPlayerTurn: true,
       playerPoints: 0,
       playerClubs: 0,
       playerCards: [],
       playerSidePile: [],
-      playerSelection: [],
+      playerHandSelection: null,
+      playerFlopSelection: [],
       flopCards: [],
       botPoints: 0,
       botClubs: 0,
@@ -84,12 +98,13 @@ const elevenMachine = setup({
     error: '',
     gameInProgress: false,
     round: 0,
-    turn: 'player',
+    isPlayerTurn: true,
     playerPoints: 0,
     playerClubs: 0,
     playerCards: [],
     playerSidePile: [],
-    playerSelection: [],
+    playerHandSelection: null,
+    playerFlopSelection: [],
     flopCards: [],
     botPoints: 0,
     botClubs: 0,
@@ -100,156 +115,162 @@ const elevenMachine = setup({
   states: {
     welcome: {
       id: 'welcome',
-      initial: 'loadingData',
+      initial: 'mainMenu',
+      invoke: {
+        src: 'loadInitialResources',
+        onDone: {
+          actions: assign({
+            cards: ({ event }) => event.output,
+            hasLoaded: true
+          })
+        }
+      },
       states: {
-        loadingData: {
-          invoke: {
-            src: 'loadInitialResources',
-            onDone: {
-              actions: assign({
-                cards: ({ event }) => event.output,
-                hasLoaded: true
-              }),
-              target: 'dataLoaded'
-            }
-          }
-        },
-        dataLoaded: {
+        mainMenu: {
           on: {
             'user.showRules': {
               target: 'rulesModal'
             },
             'user.play': {
               target: '#startGame'
-            }
+            },
           }
         },
         rulesModal: {
           id: 'rulesModal',
           on: {
             'user.hideRules': {
-              target: 'dataLoaded'
+              target: 'mainMenu'
             }
           }
         },
       }
     },
-    startGame: {
-      id: 'startGame',
-      initial: 'dealNewHand',
-      entry: ['newGame'],
-      states: {
-        dealNewHand: {
-          id: 'dealNewHand',
-          initial: 'dealPlayerHand',
-          entry: assign({
-            gameInProgress: true
-          }),
-          states: {
-            dealPlayerHand: {
-              entry: assign({
-                playerCards: ({ context }) => drawCardsFromDeck(context.cards, 4),
-              }),
-              target: 'dealBotHand'
-            },
-            dealBotHand: {
-              entry: assign ({
-                botCards: ({ context }) => drawCardsFromDeck(context.cards, 4),
-              }),
-              target: 'dealFlop'
-            },
-            dealFlop: {
-              entry: assign ({
-                flopCards: ({ context }) => drawCardsFromDeck(context.cards, 4),
-              }),
-              target: '#playerTurn'
-            }
-          }
-        },
-        playerTurn: {
-          id: 'playerTurn',
-          initial: 'selectHandCard',
-          on: {
-            'user.selectHandCard': {
-              actions: (event) => {
-                console.log('event');
-                console.log(event);
-              }
-          },
-          states: {
-            selectHandCard: {
-              on: {
-                'user.selectFlopCard': [
-                  {
-                    target: 'flopCardSelected',
-                    guard: 'isValidMove'
-                  },
-                  // {
-                  //   target: 'incorrectAnswer',
-                  //   guard: not('isAnswerCorrect')
-                  // }
-                ]
-              }
-            },
-            // flopCardSelected: {
-            //   entry: assign({
-            //     playerSelectedFlop: ({ context }) => context.points + 10
-            //   }),
-            //   always: [
-            //     {
-            //       guard: 'hasLostGame',
-            //       target: 'lostGame'
-            //     },
-            //     {
-            //       guard: 'hasWonGame',
-            //       target: 'wonGame'
-            //     }
-            //   ],
-            //   on: {
-            //     'user.nextQuestion': {
-            //       target: '#loadQuestionData'
-            //     }
-            //   }
-            // },
-            // incorrectAnswer: {
-            //   entry: assign({
-            //     lifes: ({ context }) => context.lifes - 1
-            //   }),
-            //   always: [
-            //     {
-            //       guard: 'hasLostGame',
-            //       target: 'lostGame'
-            //     },
-            //     {
-            //       guard: 'hasWonGame',
-            //       target: 'wonGame'
-            //     }
-            //   ],
-            //   on: {
-            //     'user.nextQuestion': {
-            //       target: '#loadQuestionData'
-            //     }
-            //   }
-            // },
-            lostGame: {
-              on: {
-                'user.playAgain': {
-                  target: '#startGame'
-                }
-              }
-            },
-            wonGame: {
-              on: {
-                'user.playAgain': {
-                  target: '#startGame'
-                }
-              }
-            }
-          }
+    menu: {
+      id: 'menu',
+      on: {
+        'user.closeMenu': {
+          target: '#startGame.history'
         }
       }
+    },
+    startGame: {
+      id: 'startGame',
+      initial: 'startRound',
+      // entry: ['newGame'],
+      entry: assign({
+        gameInProgress: true
+      }),
+      on: {
+        'user.openMenu': {
+          target: '#menu'
+        }
+      },
+      states: {
+        history: {
+          type: 'history',
+          history: 'deep'
+        },
+        startRound: {
+          id: 'startRound',
+          initial: 'dealCards',
+          states: {
+            dealCards: {
+              id: 'dealCards',
+              entry: assign(({ context }) => {
+                const { playerCards, botCards, flopCards } = dealCards(context.cards, context.isPlayerTurn);
+                
+                return {
+                  playerCards: playerCards,
+                  botCards: botCards,
+                  flopCards: flopCards,
+                  cards: context.cards.slice(12),
+                };
+              }),
+              always: 'decideTurn'
+            },
+            decideTurn: {
+              id: 'decideTurn',
+              always: [
+                { target: 'botTurn', guard: 'isBotTurn'},
+                { target: 'playerTurn', guard: not('isBotTurn')}
+              ]
+            },
+            botTurn: {
+              id: 'botTurn'
+            },
+            playerTurn: {
+              id: 'playerTurn',
+              on: {
+                'user.selectHandCard': {
+                  actions: assign({
+                    playerHandSelection: ({ context, event }) => 
+                      compareCards(context.playerHandSelection, event.card) ? null : event.card,
+                  }),
+                },
+                'user.selectFlopCard': {
+                  actions: assign({
+                    playerFlopSelection: ({ context, event }) => 
+                      isCardInCards(event.card, context.playerFlopSelection)
+                        ? removeCardsFromCards([event.card], context.playerFlopSelection)
+                        : [...context.playerFlopSelection, event.card],
+                  })
+                },
+                'user.dropCard': {
+                  guard: 'isPlayerHandCardSelected',
+                  actions: assign({
+                    flopCards: ({ context }) => [context.playerHandSelection!, ...context.flopCards],
+                    playerCards: ({ context }) => removeCardsFromCards([context.playerHandSelection!], context.playerCards),
+                    playerHandSelection: null,
+                  }),
+                  target: 'decideTurn'
+                },
+                'user.cancelSelection': {
+                  actions: assign({
+                    playerHandSelection: null,
+                    playerFlopSelection: []
+                  })
+                }
+              },
+              always: [
+                { target: 'playerJackMoveUpdateBoard', guard: 'isValidJackMove' },
+                { target: 'playerMoveUpdateBoard', guard: 'isValidMove' },
+              ],
+              exit: assign({
+                isPlayerTurn: false
+              })
+            },
+            playerJackMoveUpdateBoard: {
+              id: 'playerJackMoveUpdateBoard',
+              entry: assign({
+                playerFlopSelection: ({ context }) => selectNonRoyaltyCards(context.flopCards)
+              }),
+              after: {
+                1200: {
+                  target: 'playerMoveUpdateBoard'
+                }
+              }
+            },
+            playerMoveUpdateBoard: {
+              id: 'playerMoveUpdateBoard',
+              entry: assign({
+                playerSidePile: ({ context }) => [
+                  ...context.playerSidePile,
+                  context.playerHandSelection!,
+                  ...context.playerFlopSelection
+                ],
+                flopCards: ({ context }) => removeCardsFromCards(context.playerFlopSelection, context.flopCards),
+                playerCards: ({ context }) => removeCardsFromCards([context.playerHandSelection!], context.playerCards),
+                playerFlopSelection: [],
+                playerHandSelection: null
+              }),
+              always: {target: 'decideTurn'}
+            }
+          },
+        },
+      }
     }
-  }}
+  }
 });
 
 export default elevenMachine;
