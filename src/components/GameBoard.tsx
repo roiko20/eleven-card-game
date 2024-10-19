@@ -24,23 +24,15 @@ const GameBoardContainer = styled(motion.div)`
 const HandContainer = styled(motion.div)`
     display: flex;
     justify-content: center;
-    gap: 4px;
+    gap: 6px;
 `;
 
 const PlayerHandContainer = styled(motion.div)`
     display: flex;
     justify-content: center;
-    gap: 4px;
+    gap: 6px;
     grid-row-start: 3;
     grid-column-start: 2;
-`;
-
-const FlopContainer = styled(motion.div)<{ $numImages: number;}>`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    grid-column-start: ${({ theme, $numImages }) => ($numImages > 6 && (theme?.isMdScreen ? 'span 1': 'span 2'))};
 `;
 
 export interface GameBoardProps {
@@ -51,7 +43,7 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
 
-    const { playerCards, flopCards, botCards, playerSidePile, botSidePile, playerFlopSelection, playerHandSelection } = state.context;
+    const { playerCards, flopCards, botCards, playerSidePile, botSidePile, playerFlopSelection, playerHandSelection, botHandSelection } = state.context;
 
     const theme = useContext(ThemeContext);
 
@@ -63,10 +55,11 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
         <HandContainer>
         {botCards.map((card: CardType, index: number) => (
             <Card
-                key={card.code}
+                key={index}
                 card={card}
                 // showBack={true}
                 index={index}
+                selected={card.code === botHandSelection?.code}
             />
         ))}
         </HandContainer>

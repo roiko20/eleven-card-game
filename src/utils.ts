@@ -1,5 +1,5 @@
 import { assign } from "xstate";
-import { cardsData, CardType } from "./lib";
+import { cardsData, CardType, Move } from "./lib";
 
 export const CARDS_PREFIX_PATH = "/cards/";
 export const CARD_BACK_SVG_PATH = `${CARDS_PREFIX_PATH}BACK.svg`;
@@ -50,9 +50,10 @@ export const fetchResources = async () => {
   }
 }
 
-export const dealCards = (deck: CardType[], isPlayerTurn: boolean) => {
+export const dealCards = (deck: CardType[], isPlayerTurn: boolean, dealFlop: boolean) => {
   let playerCards;
   let botCards;
+  let flopCards;
   if (isPlayerTurn) {
     playerCards = deck.slice(0, 4);
     botCards = deck.slice(4, 8)
@@ -61,7 +62,9 @@ export const dealCards = (deck: CardType[], isPlayerTurn: boolean) => {
     botCards = deck.slice(0, 4);
     playerCards = deck.slice(4, 8)
   }
-  const flopCards = deck.slice(8, 12);
+  if (dealFlop) {
+    flopCards = deck.slice(8, 12);
+  }
   return { playerCards, botCards, flopCards };
 };
 
@@ -96,6 +99,30 @@ const getCardValueByCode = (cardCode: string) => {
   return 12;
 }
 
+export const getCardRank = (card: CardType): number => {
+  // Clubs winner is whoever has at least 7 clubs - 13 points => each club is 13/7 = 1.85 points
+  // 10 of diamonds - 3 points
+  if (card.code === '0D') return 3;
+  // Dudula (2 of clubs) - 2 points + club
+  if (card.code === '2C') return 3.85;
+  // Jack is 1 point + club
+  if (card.code === 'JC') return 2.85;
+  // Ace is 1 point + club
+  if (card.code === 'AC') return 2.85;
+  // Get the first char of the card code
+  const cardStrChar = card.code.charAt(0);
+  // jack is 1 point
+  if (cardStrChar === 'J') return 1;
+  // ace is 1 point
+  if (cardStrChar === 'A') return 1;
+  // Get the card suit value
+  const cardSuitStrChar = card.code.charAt(1);
+  // club is 1.85 points (13/7)
+  if (cardSuitStrChar === 'C') return 1.85;
+  // no points for other cards
+  return 0;
+}
+
 const getCardsValuesSum = (cards: CardType[]) => {
   return cards.reduce((sum, card) => {
     const cardValue = getCardValueByCode(card.code);
@@ -124,8 +151,8 @@ export const isValidMove = (playerHandCard: CardType | null, flopCards: CardType
   // king/queen selection
   if (playerHandCard?.value === 'QUEEN' || playerHandCard?.value === 'KING') {
     console.log('royalty selected, return:');
-    console.log(flopCards.length === 1 && playerHandCard.value === flopCards[1].value);
-    return flopCards.length === 1 && playerHandCard.value === flopCards[1].value;
+    console.log(flopCards.length === 1 && playerHandCard.value === flopCards[0].value);
+    return flopCards.length === 1 && playerHandCard.value === flopCards[0].value;
   }
   // sum of eleven selection
   if (getCardsValuesSum([playerHandCard, ...flopCards]) === 11) {
@@ -149,15 +176,94 @@ const cardsHaveNonRoyaltyCards = (cards: CardType[]) => {
   return cards.some(card => !isRoyalty(card));
 }
 
-// export const jackCollect = (playerHandCard: CardType | null, flopCards: CardType[]) => {
-//     // some player card must be selected
-//     if (!playerHandCard) {
-//       console.log('return false - no hand card selected');
-//       return false;
-//     }
-//   if (isValidJackMove(playerHandCard, flopCards))
-// }
+export const selectCardsByRoyalty = (cards: CardType[], isRoyaltyFilter: boolean) => {
+  return cards.filter(card => isRoyalty(card) === isRoyaltyFilter);
+}
 
-export const selectNonRoyaltyCards = (cards: CardType[]) => {
-  return cards.filter(card => !isRoyalty(card));
+export const getMoveScore = (cards: CardType[]): number => {
+  let score = 0;
+  cards.forEach((card) => {
+      score += getCardRank(card);
+  });
+  return score;
+}
+
+export const getBestMove = (hand: CardType[], flop: CardType[]): Move | null => {
+  let validMoves: Move[] = [];
+
+  const pickCardsFromFlop = (pickedCards: CardType[], remainingFlop: CardType[]) => {
+    const sumOfPickedCards = pickedCards.reduce((accumulator, pickedCard) => accumulator + getCardValueByCode(pickedCard.code), 0);
+
+    if (remainingFlop.length === 0) return; // Terminate the recursion if no more cards
+
+    if (sumOfPickedCards === 11) {
+      validMoves.push({
+        handCard: pickedCards[0],
+        flopCards: pickedCards.slice(1),
+        scoreRank: getMoveScore(pickedCards),
+      });
+      // foundValidMove = true;
+      // return; // Terminate the recursion for this starting card
+    }
+
+    for (let i = 0; i < remainingFlop.length; i++) {
+      const cardToCheck = remainingFlop[i];
+
+      // sum is less than 11 - try finding more flop cards to complete a valid move
+      if (sumOfPickedCards + getCardValueByCode(cardToCheck.code) <= 11) {
+        pickCardsFromFlop([...pickedCards, cardToCheck], remainingFlop.slice(i + 1));
+      }
+    }
+  }
+
+  for (const cardInHand of hand) {
+    // check jack move
+    if (cardInHand.value === 'JACK') {
+      const nonRoyaltyCards = selectCardsByRoyalty(flop, false);
+      // jack pick up is allowed only if there are non-royality cards in flop
+      if (nonRoyaltyCards.length > 0) {
+        validMoves.push({
+          handCard: cardInHand,
+          flopCards: nonRoyaltyCards,
+          scoreRank: getMoveScore([cardInHand, ...nonRoyaltyCards])
+        })
+      }
+    }
+    // check king/queen move
+    else if (isRoyalty(cardInHand)) {
+      const optionalRoyalityCardsToPickUp = selectCardsByRoyalty(flop, true);
+      optionalRoyalityCardsToPickUp.forEach(optionalRoyalityCardToPickUp => {
+        validMoves.push({
+          handCard: cardInHand,
+          flopCards: [optionalRoyalityCardToPickUp],
+          scoreRank: getMoveScore([cardInHand, optionalRoyalityCardToPickUp])
+        })
+      })
+    }
+    // check sum of eleven move
+    pickCardsFromFlop([cardInHand], flop);
+  }
+
+  // no moves found
+  if (validMoves.length === 0) {
+    return null;
+  }
+
+  const bestMove = validMoves.reduce((bestMove, currentMove) => {
+    return currentMove.scoreRank > bestMove.scoreRank ? currentMove : bestMove;
+  }, validMoves[0]);
+
+  console.log('best move:');
+  console.log(bestMove);
+
+  return bestMove;
+}
+
+export const getBestCardToDrop = (cards: CardType[]) => {
+  return cards.reduce((minCard, currentCard) => {
+    const minScore = getCardRank(minCard);
+    const currentScore = getCardRank(currentCard);
+
+    return currentScore < minScore ? currentCard : minCard;
+  });
 }

@@ -1,27 +1,4 @@
-export enum Suit {
-    Spades,
-    Diamonds,
-    Clubs,
-    Hearts,
-  }
-  
-  export enum Rank {
-    Num2,
-    Num3,
-    Num4,
-    Num5,
-    Num6,
-    Num7,
-    Num8,
-    Num9,
-    Num10,
-    Jack,
-    Queen,
-    King,
-    Ace,
-  }
-
-  export interface CardType {
+export interface CardType {
     code: string;
     image: string;
     images: {
@@ -37,6 +14,12 @@ export interface Score {
     clubs: number;
     bonus: number;
 }
+
+export interface Move {
+    handCard: CardType;
+    flopCards: CardType[];
+    scoreRank: number;
+  }
 
 export const cardsData = [
     {

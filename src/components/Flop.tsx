@@ -8,7 +8,7 @@ const FlopContainer = styled(motion.div)<{ $numImages: number;}>`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 6px;
     grid-column-start: ${({ theme, $numImages }) => ($numImages > 6 && (theme?.isMdScreen ? 'span 1': 'span 2'))};
 `;
 
@@ -16,7 +16,7 @@ export default function GameBoard() {
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
 
-    const { flopCards, isPlayerTurn, playerFlopSelection, playerHandSelection } = state.context;
+    const { flopCards, isPlayerTurn, playerFlopSelection, playerHandSelection, botFlopSelection } = state.context;
 
     const numOfItems = isPlayerTurn ? flopCards.length + 1 : flopCards.length;
 
@@ -37,7 +37,7 @@ export default function GameBoard() {
                     numImages={numOfItems}
                     index={index}
                     onCardClick={() => elevenActorRef.send({type: 'user.selectFlopCard', card: card})}
-                    selected={isCardInCards(card, playerFlopSelection)}
+                    selected={isCardInCards(card, isPlayerTurn ? playerFlopSelection : botFlopSelection)}
                 />
             ))}
         </FlopContainer>

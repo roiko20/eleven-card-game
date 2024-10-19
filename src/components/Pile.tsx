@@ -21,7 +21,7 @@ const PileCard = styled(motion.img)<{ index: number; $isPlayerSidePile?: boolean
     position: absolute;
     right: ${({ index }) => (`${index * -2.5}px`)};
     height: 99%;
-    border-radius: 18px;
+    border-radius: ${({ $isPlayerSidePile }) => ($isPlayerSidePile ? '18px' : '8px')};
     box-shadow: 1px 1px 6px #424242;
 `;
 

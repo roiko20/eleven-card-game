@@ -1,4 +1,4 @@
-import { Rank, Suit, CardType } from "../lib";
+import { CardType } from "../lib";
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import { CARD_BACK_SVG_PATH, DROP_AREA_SVG_PATH, createCardSVGPath } from '../utils';
@@ -19,14 +19,17 @@ export const StyledCard = styled(motion.img)<{ $numImages?: number; $selected: b
   max-width: ${({ $numImages }) => ($numImages ? `calc(90% / ${$numImages})` : '100%')};
   box-sizing: border-box;
   border: ${({ theme, $selected }) => ($selected && `#ffff00 outset ${theme.isMdScreen ? '4px' : '6px'}`)};
-  border-radius: ${({ $selected, $dropArea }) => ($dropArea ? '20px' : $selected ? '18px' : '10px')};
+  border-radius: ${({ theme, $selected, $dropArea }) => (
+    theme.isMdScreen ? ($dropArea ? '6px' : $selected ? '10px' : '4px')
+    : ($dropArea ? '20px' : $selected ? '18px' : '10px')
+  )};
   box-shadow: ${({ $selected }) => ($selected ? '4px 4px 18px #424242' : '2px 2px 6px #424242')};
 `;
 
-const getCardAnimation = (index: number, selected: boolean) => {
+const getCardAnimation = (index: number, selected: boolean, isPlayerTurn: boolean) => {
     if (selected) {
       return {
-        y: -7,
+        y: isPlayerTurn ? -7 : 7,
         zIndex: 10,
         cursor: 'grab'
      }
@@ -88,7 +91,7 @@ export default function Card({ card, showBack, dropArea = false, numImages, inde
             $selected={selected}
             $dropArea={dropArea}
             initial={!selected && { opacity: 0, x: -100, scale: 1.2 }}
-            animate={getCardAnimation(index, selected)}
+            animate={getCardAnimation(index, selected, isPlayerTurn)}
             whileHover={getCardHoverAnimation(dropArea, isPlayerTurn && !!onCardClick)}
             onClick={(e) => {
               e.stopPropagation();

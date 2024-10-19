@@ -2,27 +2,28 @@ import { assertEvent, assign, fromPromise, not, setup } from 'xstate';
 import { CardType } from "../lib";
 // import { RickCharacters } from './services/RickApi';
 // import { getRandomNumber } from './common/constants';
-import { compareCards, dealCards, fetchDeck, fetchResources, isCardInCards, isValidJackMove, isValidMove, removeCardsFromCards, selectNonRoyaltyCards } from '../utils';
+import { compareCards, dealCards, fetchDeck, fetchResources, getBestCardToDrop, getBestMove, isCardInCards, isValidJackMove, isValidMove, removeCardsFromCards, selectCardsByRoyalty } from '../utils';
 
 interface ElevenContext {
   cards: CardType[];
-      hasLoaded: boolean;
-      error: string;
-      gameInProgress: boolean;
-      round: number;
-      isPlayerTurn: boolean;
-      playerPoints: number;
-      playerClubs: number;
-      playerCards: CardType[];
-      playerSidePile: CardType[];
-      playerHandSelection: CardType | null;
-      playerFlopSelection: CardType[],
-      flopCards: CardType[];
-      botPoints: number;
-      botClubs: number;
-      botCards: CardType[];
-      botSidePile: CardType[];
-      botSelection: CardType[];
+    hasLoaded: boolean;
+    error: string;
+    gameInProgress: boolean;
+    round: number;
+    isPlayerTurn: boolean;
+    playerPoints: number;
+    playerClubs: number;
+    playerCards: CardType[];
+    playerSidePile: CardType[];
+    playerHandSelection: CardType | null;
+    playerFlopSelection: CardType[],
+    flopCards: CardType[];
+    botPoints: number;
+    botClubs: number;
+    botCards: CardType[];
+    botSidePile: CardType[];
+    botHandSelection: CardType | null;
+    botFlopSelection: CardType[];
 }
 
 type ElevenEvents =
@@ -57,6 +58,7 @@ const elevenMachine = setup({
     },
     isValidJackMove: ({ context }) => isValidJackMove(context.playerHandSelection, context.flopCards),
     isPlayerHandCardSelected: ({ context }) => !!context.playerHandSelection,
+    isHandOver: ({ context }) => context.botCards.length === 0 && context.playerCards.length === 0,
     hasLostGame: ({ context }) => {
       return context.botPoints >= 104;
     },
@@ -82,7 +84,8 @@ const elevenMachine = setup({
       botClubs: 0,
       botCards: [],
       botSidePile: [],
-      botSelection: []
+      botHandSelection: null,
+      botFlopSelection: []
     })
   },
   actors: {
@@ -110,7 +113,8 @@ const elevenMachine = setup({
     botClubs: 0,
     botCards: [],
     botSidePile: [],
-    botSelection: []
+    botHandSelection: null,
+    botFlopSelection: []
   },
   states: {
     welcome: {
@@ -178,12 +182,12 @@ const elevenMachine = setup({
             dealCards: {
               id: 'dealCards',
               entry: assign(({ context }) => {
-                const { playerCards, botCards, flopCards } = dealCards(context.cards, context.isPlayerTurn);
+                const { playerCards, botCards, flopCards } = dealCards(context.cards, context.isPlayerTurn, context.flopCards.length === 0);
                 
                 return {
                   playerCards: playerCards,
                   botCards: botCards,
-                  flopCards: flopCards,
+                  flopCards: flopCards ?? context.flopCards,
                   cards: context.cards.slice(12),
                 };
               }),
@@ -197,7 +201,36 @@ const elevenMachine = setup({
               ]
             },
             botTurn: {
-              id: 'botTurn'
+              id: 'botTurn',
+              initial: 'setMove',
+              states: {
+                setMove: {
+                  id: 'setMove',
+                  entry: assign(({ context }) => {
+                    const bestMove = getBestMove(context.botCards, context.flopCards);
+                    // no moves - set drop card selection
+                    if (!bestMove) {
+                      const cardToDrop = getBestCardToDrop(context.botCards);
+                      return {
+                        botHandSelection: cardToDrop
+                      }
+                    }
+
+                    // set selection by best move
+                    const { handCard, flopCards } = bestMove;
+                    
+                    return {
+                      botHandSelection: handCard,
+                      botFlopSelection: flopCards
+                    };
+                  }),
+                  after: {
+                    2000: {
+                      target: '#botMoveUpdateBoard'
+                    }
+                  }
+                },
+              }
             },
             playerTurn: {
               id: 'playerTurn',
@@ -222,6 +255,7 @@ const elevenMachine = setup({
                     flopCards: ({ context }) => [context.playerHandSelection!, ...context.flopCards],
                     playerCards: ({ context }) => removeCardsFromCards([context.playerHandSelection!], context.playerCards),
                     playerHandSelection: null,
+                    isPlayerTurn: false
                   }),
                   target: 'decideTurn'
                 },
@@ -234,21 +268,53 @@ const elevenMachine = setup({
               },
               always: [
                 { target: 'playerJackMoveUpdateBoard', guard: 'isValidJackMove' },
-                { target: 'playerMoveUpdateBoard', guard: 'isValidMove' },
+                { target: 'playerMoveDelayedUpdateBoard', guard: 'isValidMove' }
               ],
+            },
+            botMoveUpdateBoard: {
+              id: 'botMoveUpdateBoard',
+              entry: assign(({ context }) => {
+                // cards collected - add to side pile
+                if (context.botFlopSelection.length) {
+                  return {
+                    botSidePile: [
+                      ...context.botSidePile,
+                      context.botHandSelection!,
+                      ...context.botFlopSelection
+                    ],
+                    flopCards: removeCardsFromCards(context.botFlopSelection, context.flopCards),
+                    botCards: removeCardsFromCards([context.botHandSelection!], context.botCards),
+                    botFlopSelection: [],
+                    botHandSelection: null,
+                  }
+                }
+                // card dropped - add to flop
+                return {
+                  flopCards: [context.botHandSelection!, ...context.flopCards],
+                  botCards: removeCardsFromCards([context.botHandSelection!], context.botCards),
+                  botHandSelection: null
+                }
+              }),
               exit: assign({
-                isPlayerTurn: false
-              })
+                isPlayerTurn: true
+              }),
+              always: {target: 'decideTurn'}
             },
             playerJackMoveUpdateBoard: {
               id: 'playerJackMoveUpdateBoard',
               entry: assign({
-                playerFlopSelection: ({ context }) => selectNonRoyaltyCards(context.flopCards)
+                playerFlopSelection: ({ context }) => selectCardsByRoyalty(context.flopCards, false)
               }),
               after: {
                 1200: {
                   target: 'playerMoveUpdateBoard'
                 }
+              }
+            },
+            playerMoveDelayedUpdateBoard: {
+              id: 'playerMoveDelayedUpdateBoard',
+              after: {
+                600: { target: 'playerMoveUpdateBoard' }
               }
             },
             playerMoveUpdateBoard: {
@@ -262,11 +328,15 @@ const elevenMachine = setup({
                 flopCards: ({ context }) => removeCardsFromCards(context.playerFlopSelection, context.flopCards),
                 playerCards: ({ context }) => removeCardsFromCards([context.playerHandSelection!], context.playerCards),
                 playerFlopSelection: [],
-                playerHandSelection: null
+                playerHandSelection: null,
+                isPlayerTurn: false
               }),
               always: {target: 'decideTurn'}
             }
           },
+          always: [
+            { target: '.dealCards', guard: 'isHandOver' },
+          ],
         },
       }
     }
