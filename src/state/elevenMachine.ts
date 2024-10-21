@@ -2,7 +2,7 @@ import { assertEvent, assign, fromPromise, not, setup } from 'xstate';
 import { CardType } from "../lib";
 // import { RickCharacters } from './services/RickApi';
 // import { getRandomNumber } from './common/constants';
-import { compareCards, dealCards, fetchDeck, fetchResources, getBestCardToDrop, getBestMove, isCardInCards, isValidJackMove, isValidMove, removeCardsFromCards, selectCardsByRoyalty } from '../utils';
+import { compareCards, dealCards, fetchDeck, fetchResources, getBestCardToDrop, getBestMove, getCardScore, getCardsScore, getNumOfClubs, isCardInCards, isValidJackMove, isValidMove, removeCardsFromCards, selectCardsByRoyalty, shuffleDeck } from '../utils';
 
 interface ElevenContext {
   cards: CardType[];
@@ -11,6 +11,7 @@ interface ElevenContext {
     gameInProgress: boolean;
     round: number;
     isPlayerTurn: boolean;
+    isLastHand: boolean;
     playerPoints: number;
     playerClubs: number;
     playerCards: CardType[];
@@ -57,7 +58,10 @@ const elevenMachine = setup({
       return isValidMove(context.playerHandSelection, context.playerFlopSelection);
     },
     isValidJackMove: ({ context }) => isValidJackMove(context.playerHandSelection, context.flopCards),
+    isBonusMove: ({ context }) => context.flopCards.length === 0 && !context.isLastHand,
     isPlayerHandCardSelected: ({ context }) => !!context.playerHandSelection,
+    // isLastHand: ({ context }) => context.isLastHand,
+    isRoundOver : ({ context }) => context.cards.length === 0 && context.botCards.length === 0 && context.playerCards.length === 0,
     isHandOver: ({ context }) => context.botCards.length === 0 && context.playerCards.length === 0,
     hasLostGame: ({ context }) => {
       return context.botPoints >= 104;
@@ -73,6 +77,7 @@ const elevenMachine = setup({
       cards: [], // TODO: add new deck cards
       round: 0,
       isPlayerTurn: true,
+      isLastHand: false,
       playerPoints: 0,
       playerClubs: 0,
       playerCards: [],
@@ -102,6 +107,7 @@ const elevenMachine = setup({
     gameInProgress: false,
     round: 0,
     isPlayerTurn: true,
+    isLastHand: false,
     playerPoints: 0,
     playerClubs: 0,
     playerCards: [],
@@ -182,17 +188,34 @@ const elevenMachine = setup({
             dealCards: {
               id: 'dealCards',
               entry: assign(({ context }) => {
-                const { playerCards, botCards, flopCards } = dealCards(context.cards, context.isPlayerTurn, context.flopCards.length === 0);
+                // const isNewRound = context.cards.length === 52;
+                const { playerCards, botCards, flopCards } = dealCards(context.cards, context.isPlayerTurn, true);
+                // let updatedDeck = flopCards ? context.cards.slice(12) : context.cards.slice(8);
+                let updatedDeck = context.cards.slice(1);
+                const isLastHand = updatedDeck.length === 0;
+
+                if (isLastHand) {
+                  const newDeck = shuffleDeck([
+                    ...botCards,
+                    ...context.botSidePile,
+                    ...context.flopCards,
+                    ...playerCards,
+                    ...context.playerSidePile
+                  ]);
+                  updatedDeck = newDeck;
+                }
                 
                 return {
+                  round: true ? context.round + 1 : context.round,
                   playerCards: playerCards,
                   botCards: botCards,
                   flopCards: flopCards ?? context.flopCards,
-                  cards: context.cards.slice(12),
+                  cards: updatedDeck,
+                  isLastHand: isLastHand
                 };
               }),
               always: 'decideTurn'
-            },
+            },       
             decideTurn: {
               id: 'decideTurn',
               always: [
@@ -282,6 +305,8 @@ const elevenMachine = setup({
                       context.botHandSelection!,
                       ...context.botFlopSelection
                     ],
+                    botPoints: context.botPoints + getCardsScore([context.botHandSelection!, ...context.botFlopSelection]),
+                    botClubs: context.botClubs + getNumOfClubs([context.botHandSelection!, ...context.botFlopSelection]),
                     flopCards: removeCardsFromCards(context.botFlopSelection, context.flopCards),
                     botCards: removeCardsFromCards([context.botHandSelection!], context.botCards),
                     botFlopSelection: [],
@@ -314,7 +339,7 @@ const elevenMachine = setup({
             playerMoveDelayedUpdateBoard: {
               id: 'playerMoveDelayedUpdateBoard',
               after: {
-                600: { target: 'playerMoveUpdateBoard' }
+                400: { target: 'playerMoveUpdateBoard' }
               }
             },
             playerMoveUpdateBoard: {
@@ -325,14 +350,30 @@ const elevenMachine = setup({
                   context.playerHandSelection!,
                   ...context.playerFlopSelection
                 ],
+                playerPoints: ({ context }) => context.playerPoints + getCardsScore([context.playerHandSelection!, ...context.playerFlopSelection]),
+                playerClubs: ({ context }) => context.playerClubs + getNumOfClubs([context.playerHandSelection!, ...context.playerFlopSelection]),
                 flopCards: ({ context }) => removeCardsFromCards(context.playerFlopSelection, context.flopCards),
                 playerCards: ({ context }) => removeCardsFromCards([context.playerHandSelection!], context.playerCards),
                 playerFlopSelection: [],
                 playerHandSelection: null,
                 isPlayerTurn: false
               }),
-              always: {target: 'decideTurn'}
-            }
+              always: [
+                { target: 'playerBonusMove', guard: 'isBonusMove' },
+                { target: 'decideTurn', guard: not('isBonusMove') }
+              ]
+            },
+            playerBonusMove: {
+              id: 'playerBonusMove',
+              entry: assign({
+                playerPoints: ({ context }) => context.playerPoints + 5
+              }),
+              after: {
+                3000: {
+                  target: 'decideTurn'
+                }
+              }
+            },
           },
           always: [
             { target: '.dealCards', guard: 'isHandOver' },

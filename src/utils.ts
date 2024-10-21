@@ -1,5 +1,5 @@
 import { assign } from "xstate";
-import { cardsData, CardType, Move } from "./lib";
+import { cardsData, soorDeck, CardType, Move } from "./lib";
 
 export const CARDS_PREFIX_PATH = "/cards/";
 export const CARD_BACK_SVG_PATH = `${CARDS_PREFIX_PATH}BACK.svg`;
@@ -35,7 +35,8 @@ export const fetchResources = async () => {
   try {
     // draw deck
     // const cards = await fetchDeck();
-    const cards = cardsData;
+    // const cards = cardsData;
+    const cards = soorDeck;
   
     // preload SVGs
     const cardImagePromises = cards.map((card: CardType) => preloadImage(createCardSVGPath(card)));
@@ -63,14 +64,10 @@ export const dealCards = (deck: CardType[], isPlayerTurn: boolean, dealFlop: boo
     playerCards = deck.slice(4, 8)
   }
   if (dealFlop) {
-    flopCards = deck.slice(8, 12);
+    flopCards = deck.slice(8, 11);
   }
   return { playerCards, botCards, flopCards };
 };
-
-export const isPlayerTurn = (turn: 'bot' | 'player') => {
-  return turn === 'player';
-}
 
 export const compareCards = (card1: CardType | null, card2: CardType| null) => {
   return card1 && card2 && card1.code === card2.code;
@@ -121,6 +118,35 @@ export const getCardRank = (card: CardType): number => {
   if (cardSuitStrChar === 'C') return 1.85;
   // no points for other cards
   return 0;
+}
+
+export const getCardScore = (card: CardType): number => {
+  // 10 diamonds - 3 points
+  if (card.code === '0D') return 3;
+  // Dudula (2 of clubs) - 2 points
+  if (card.code === '2C') return 2;
+  // jack - 1 point
+  if (card.value === 'JACK') return 1;
+  // ace - 1 point
+  if (card.value === 'ACE') return 1;
+  // no points for other cards
+  return 0;
+}
+
+export const getMoveRank = (cards: CardType[]) => {
+  return cards.reduce((rank, card) => rank + getCardRank(card), 0);
+}
+
+export const getCardsScore = (cards: CardType[]) => {
+  return cards.reduce((score, card) => score + getCardScore(card), 0);
+}
+
+const isClub = (card: CardType) => {
+  return card.suit === 'CLUBS';
+}
+
+export const getNumOfClubs = (cards: CardType[]) => {
+  return cards.reduce((numOfClubs, card) => numOfClubs + Number(isClub(card)), 0);
 }
 
 const getCardsValuesSum = (cards: CardType[]) => {
@@ -180,31 +206,23 @@ export const selectCardsByRoyalty = (cards: CardType[], isRoyaltyFilter: boolean
   return cards.filter(card => isRoyalty(card) === isRoyaltyFilter);
 }
 
-export const getMoveScore = (cards: CardType[]): number => {
-  let score = 0;
-  cards.forEach((card) => {
-      score += getCardRank(card);
-  });
-  return score;
-}
-
 export const getBestMove = (hand: CardType[], flop: CardType[]): Move | null => {
   let validMoves: Move[] = [];
 
   const pickCardsFromFlop = (pickedCards: CardType[], remainingFlop: CardType[]) => {
     const sumOfPickedCards = pickedCards.reduce((accumulator, pickedCard) => accumulator + getCardValueByCode(pickedCard.code), 0);
 
-    if (remainingFlop.length === 0) return; // Terminate the recursion if no more cards
-
     if (sumOfPickedCards === 11) {
       validMoves.push({
         handCard: pickedCards[0],
         flopCards: pickedCards.slice(1),
-        scoreRank: getMoveScore(pickedCards),
+        scoreRank: getMoveRank(pickedCards),
       });
       // foundValidMove = true;
       // return; // Terminate the recursion for this starting card
     }
+
+    if (remainingFlop.length === 0) return; // Terminate the recursion if no more cards
 
     for (let i = 0; i < remainingFlop.length; i++) {
       const cardToCheck = remainingFlop[i];
@@ -225,24 +243,27 @@ export const getBestMove = (hand: CardType[], flop: CardType[]): Move | null => 
         validMoves.push({
           handCard: cardInHand,
           flopCards: nonRoyaltyCards,
-          scoreRank: getMoveScore([cardInHand, ...nonRoyaltyCards])
+          scoreRank: getMoveRank([cardInHand, ...nonRoyaltyCards])
         })
       }
     }
     // check king/queen move
     else if (isRoyalty(cardInHand)) {
-      const optionalRoyalityCardsToPickUp = selectCardsByRoyalty(flop, true);
+      const optionalRoyalityCardsToPickUp = flop.filter((card) => card.value === cardInHand.value);
       optionalRoyalityCardsToPickUp.forEach(optionalRoyalityCardToPickUp => {
         validMoves.push({
           handCard: cardInHand,
           flopCards: [optionalRoyalityCardToPickUp],
-          scoreRank: getMoveScore([cardInHand, optionalRoyalityCardToPickUp])
+          scoreRank: getMoveRank([cardInHand, optionalRoyalityCardToPickUp])
         })
       })
     }
     // check sum of eleven move
     pickCardsFromFlop([cardInHand], flop);
   }
+
+  console.log('valid moves:');
+  console.log(validMoves);
 
   // no moves found
   if (validMoves.length === 0) {
@@ -266,4 +287,13 @@ export const getBestCardToDrop = (cards: CardType[]) => {
 
     return currentScore < minScore ? currentCard : minCard;
   });
+}
+
+export const shuffleDeck = (cards: CardType[]) => {
+  const shuffled = [...cards];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
 }

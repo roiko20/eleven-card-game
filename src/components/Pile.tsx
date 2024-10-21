@@ -19,10 +19,10 @@ const PileContainer = styled(motion.div)<{ $isPlayerSidePile?: boolean; }>`
 
 const PileCard = styled(motion.img)<{ index: number; $isPlayerSidePile?: boolean; }>`
     position: absolute;
-    right: ${({ index }) => (`${index * -2.5}px`)};
+    right: ${({ index, $isPlayerSidePile }) => (`${index * ($isPlayerSidePile ? -1.35 : -0.75)}px`)};
     height: 99%;
     border-radius: ${({ $isPlayerSidePile }) => ($isPlayerSidePile ? '18px' : '8px')};
-    box-shadow: 1px 1px 6px #424242;
+    box-shadow: ${({ $isPlayerSidePile }) => ($isPlayerSidePile ? '1px 1px 4px #424242' : '1px 1px 2.5px #424242')};
 `;
 
 const Pile: React.FC<PileProps> = ({ cards, isPlayerSidePile = true }) => {
@@ -40,7 +40,7 @@ const Pile: React.FC<PileProps> = ({ cards, isPlayerSidePile = true }) => {
             <PileCard
               key={index}
               index={index}
-              initial={{ opacity: 0, x: "-40vw", y: isPlayerSidePile ? "-40vh" : "40vh" }}
+              initial={{ opacity: 0, x: "-45vw", y: isPlayerSidePile ? "-45vh" : "45vh" }}
               animate={{ opacity: 1, x: 0, y: 0, transition: { delay: 0.2 * (index - previousCardsLengthRef.current), duration: 0.3}}}
               src={'/cards/BACK.svg'} 
               alt={card.code}

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Button from "./Button";
 import Modal from "./Modal";
 import { ElevenMachineContext } from "../context/AppContext";
+import Confetti from "./Confetti";
 
 interface WelcomeProps {
     onBackClick: () => void;
@@ -29,6 +30,30 @@ const StyledIcon = styled(motion.img)`
     width: 6rem;
 `;
 
+const welcomeVariants = {
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.7
+      }
+    },
+    hidden: {
+        opacity: 0
+    }
+};
+
+const itemVariants = {
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.9
+      }
+    },
+    hidden: {
+      opacity: 0
+    },
+};
+
 export default function Welcome({ onBackClick }: WelcomeProps) {
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
@@ -37,12 +62,13 @@ export default function Welcome({ onBackClick }: WelcomeProps) {
 
     return (
         <StyledOverlay       
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            variants={welcomeVariants}
+            initial="hidden"
+            animate="visible"
         >
-            <StyledIcon src={'/icons/clubs.svg'} />
-            <h1>Eleven</h1>
-            <StyledActions>
+            <StyledIcon src={'/icons/clubs.svg'} variants={itemVariants} />
+            <motion.h1 variants={itemVariants} >Eleven</motion.h1>
+            <StyledActions variants={itemVariants}>
                 {
                     gameInProgress &&
                         <Button
@@ -66,6 +92,7 @@ export default function Welcome({ onBackClick }: WelcomeProps) {
                 open={state.matches({ welcome: 'rulesModal' })}
                 onClose={() => elevenActorRef.send({ type: 'user.hideRules' })}
             />
+            {/* <Confetti /> */}
         </StyledOverlay>
     )
 }

@@ -19,7 +19,7 @@ export interface Move {
     handCard: CardType;
     flopCards: CardType[];
     scoreRank: number;
-  }
+}
 
 export const cardsData = [
     {
@@ -543,3 +543,126 @@ export const cardsData = [
         "suit": "CLUBS"
     }
 ];
+
+export const soorDeck = [
+    {
+        "code": "4S",
+        "image": "https://deckofcardsapi.com/static/img/4S.png",
+        "images": {
+            "svg": "https://deckofcardsapi.com/static/img/4S.svg",
+            "png": "https://deckofcardsapi.com/static/img/4S.png"
+        },
+        "value": "4",
+        "suit": "SPADES"
+    },
+    {
+        "code": "2D",
+        "image": "https://deckofcardsapi.com/static/img/2D.png",
+        "images": {
+            "svg": "https://deckofcardsapi.com/static/img/2D.svg",
+            "png": "https://deckofcardsapi.com/static/img/2D.png"
+        },
+        "value": "2",
+        "suit": "DIAMONDS"
+    },
+    {
+        "code": "4D",
+        "image": "https://deckofcardsapi.com/static/img/4D.png",
+        "images": {
+            "svg": "https://deckofcardsapi.com/static/img/4D.svg",
+            "png": "https://deckofcardsapi.com/static/img/4D.png"
+        },
+        "value": "4",
+        "suit": "DIAMONDS"
+    },
+    {
+        "code": "5D",
+        "image": "https://deckofcardsapi.com/static/img/5D.png",
+        "images": {
+            "svg": "https://deckofcardsapi.com/static/img/5D.svg",
+            "png": "https://deckofcardsapi.com/static/img/5D.png"
+        },
+        "value": "5",
+        "suit": "DIAMONDS"
+    },
+    {
+        "code": "7H",
+        "image": "https://deckofcardsapi.com/static/img/7H.png",
+        "images": {
+            "svg": "https://deckofcardsapi.com/static/img/7H.svg",
+            "png": "https://deckofcardsapi.com/static/img/7H.png"
+        },
+        "value": "7",
+        "suit": "HEARTS"
+    },
+    {
+        "code": "3C",
+        "image": "https://deckofcardsapi.com/static/img/3C.png",
+        "images": {
+            "svg": "https://deckofcardsapi.com/static/img/3C.svg",
+            "png": "https://deckofcardsapi.com/static/img/3C.png"
+        },
+        "value": "3",
+        "suit": "CLUBS"
+    },
+    {
+        "code": "4H",
+        "image": "https://deckofcardsapi.com/static/img/4H.png",
+        "images": {
+            "svg": "https://deckofcardsapi.com/static/img/4H.svg",
+            "png": "https://deckofcardsapi.com/static/img/4H.png"
+        },
+        "value": "4",
+        "suit": "HEARTS"
+    },
+    {
+        "code": "2H",
+        "image": "https://deckofcardsapi.com/static/img/2H.png",
+        "images": {
+            "svg": "https://deckofcardsapi.com/static/img/2H.svg",
+            "png": "https://deckofcardsapi.com/static/img/2H.png"
+        },
+        "value": "2",
+        "suit": "HEARTS"
+    },
+    {
+        "code": "7C",
+        "image": "https://deckofcardsapi.com/static/img/7C.png",
+        "images": {
+            "svg": "https://deckofcardsapi.com/static/img/7C.svg",
+            "png": "https://deckofcardsapi.com/static/img/7C.png"
+        },
+        "value": "7",
+        "suit": "CLUBS"
+    },
+    {
+        "code": "8C",
+        "image": "https://deckofcardsapi.com/static/img/8C.png",
+        "images": {
+            "svg": "https://deckofcardsapi.com/static/img/8C.svg",
+            "png": "https://deckofcardsapi.com/static/img/8C.png"
+        },
+        "value": "8",
+        "suit": "CLUBS"
+    },
+    {
+        "code": "6C",
+        "image": "https://deckofcardsapi.com/static/img/6C.png",
+        "images": {
+            "svg": "https://deckofcardsapi.com/static/img/6C.svg",
+            "png": "https://deckofcardsapi.com/static/img/6C.png"
+        },
+        "value": "6",
+        "suit": "CLUBS"
+    },
+    {
+        "code": "9C",
+        "image": "https://deckofcardsapi.com/static/img/9C.png",
+        "images": {
+            "svg": "https://deckofcardsapi.com/static/img/9C.svg",
+            "png": "https://deckofcardsapi.com/static/img/9C.png"
+        },
+        "value": "9",
+        "suit": "CLUBS"
+    }
+]

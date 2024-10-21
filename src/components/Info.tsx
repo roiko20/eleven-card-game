@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export interface InfoProps {
+    round: number;
     isLastHand: boolean;
 }
 
@@ -49,12 +50,13 @@ const StyledLastHandText = styled('span')`
     text-align: center;
 `;
 
-export default function Info({isLastHand}: InfoProps) {
+export default function Info({round, isLastHand}: InfoProps) {
+
     return (
         <StyledInfoContainer>
             <StyledRoundTextContainer>
                 <StyledRoundText>Round</StyledRoundText>
-                <StyledRoundCount>1</StyledRoundCount>
+                <StyledRoundCount>{round}</StyledRoundCount>
             </StyledRoundTextContainer>
             {isLastHand &&
             <StyledLastHandContainer>

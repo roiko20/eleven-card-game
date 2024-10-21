@@ -10,6 +10,7 @@ import Menu from './Menu';
 import { ElevenMachineContext } from '../context/AppContext';
 import { isCardInCards } from '../utils';
 import Flop from './Flop';
+import Confetti from './Confetti';
 
 const GameBoardContainer = styled(motion.div)`
     padding: ${({ theme }) => (theme?.isMdScreen ? '16px 16px 16px 4px' : '32px 32px 32px 16px')};
@@ -43,7 +44,7 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
 
-    const { playerCards, flopCards, botCards, playerSidePile, botSidePile, playerFlopSelection, playerHandSelection, botHandSelection } = state.context;
+    const { round, isLastHand, playerCards, botCards, playerSidePile, botSidePile, playerHandSelection, botHandSelection, botPoints, botClubs, playerPoints, playerClubs } = state.context;
 
     const theme = useContext(ThemeContext);
 
@@ -51,11 +52,11 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
     console.log(state);
     
     return <GameBoardContainer onClick={() => elevenActorRef.send({ type: 'user.cancelSelection'})}>
-        <Score isPlayerScore={false}/>
+        <Score isPlayerScore={false} points={botPoints} clubs={botClubs} showConfetti={false} />
         <HandContainer>
         {botCards.map((card: CardType, index: number) => (
             <Card
-                key={index}
+                key={card.code}
                 card={card}
                 // showBack={true}
                 index={index}
@@ -63,10 +64,10 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
             />
         ))}
         </HandContainer>
-        <Info isLastHand={false} />
+        <Info round={round} isLastHand={isLastHand} />
         <Flop />
         {theme?.isLgScreen && <Pile cards={botSidePile} isPlayerSidePile={false} />}
-        <Score isPlayerScore={true}/>
+        <Score isPlayerScore={true} points={playerPoints} clubs={playerClubs} showConfetti={state.matches({startGame: {startRound: 'playerBonusMove'}})} />
         <PlayerHandContainer>
         {playerCards.map((card: CardType, index: number) => (
             <Card
@@ -81,5 +82,6 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
         </PlayerHandContainer>
         {theme?.isLgScreen && <Pile cards={playerSidePile} />}
         <Menu handleClick={() => elevenActorRef.send({ type: 'user.openMenu' })}/>
+        {/* {state.matches({startGame: {startRound: 'playerBonusMove'}}) && <Confetti />} */}
     </GameBoardContainer>;
 };

@@ -1,9 +1,12 @@
-import { CardType } from "../lib";
+import { motion } from 'framer-motion';
 import styled from 'styled-components';
+import Confetti, { ConfettiType } from './Confetti';
 
 export interface ScoreProps {
     isPlayerScore: boolean;
-    cards?: CardType[];
+    points: number;
+    clubs: number;
+    showConfetti: boolean;
 }
 
 const StyledScoreContainer = styled('div')<{ $isPlayerScore: boolean;}>`
@@ -36,17 +39,20 @@ const StyledScoreItemText = styled('span')`
     font-size: ${({ theme }) => (theme?.isMdScreen ? '24px' : '34px')};
 `;
 
-export default function Score({isPlayerScore, cards}: ScoreProps) {
+export default function Score({isPlayerScore, points, clubs, showConfetti}: ScoreProps) {
     return (
         <StyledScoreContainer $isPlayerScore={isPlayerScore}>
             <StyledScoreTitle>{isPlayerScore ? 'YOU' : 'BOT'}</StyledScoreTitle>
             <StyledScoreItem>
                 <StyledScoreItemIcon src={'/icons/points.png'} />
-                <StyledScoreItemText>20</StyledScoreItemText>
+                <StyledScoreItemText>{points}</StyledScoreItemText>
+                {showConfetti && 
+                    <Confetti isPlayerScore={isPlayerScore} type={ConfettiType.Bonus} />
+                }
             </StyledScoreItem>
             <StyledScoreItem>
                 <StyledScoreItemIcon src={'/icons/clubs.svg'} />
-                <StyledScoreItemText>40</StyledScoreItemText>
+                <StyledScoreItemText>{clubs}</StyledScoreItemText>
             </StyledScoreItem>
         </StyledScoreContainer>
       );
