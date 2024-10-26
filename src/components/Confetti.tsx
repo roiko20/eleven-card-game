@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import styled, { ThemeContext } from "styled-components";
 
 const bonusIcons = ['/icons/joker.png', '/icons/fivePoints.png'];
+const clubsIcons = ['/icons/clubsCoin.png', '/icons/thirteen.png'];
 
 export enum ConfettiType {
     Bonus = 'Bonus',
@@ -11,10 +12,10 @@ export enum ConfettiType {
 
 interface ConfettiProps {
     isPlayerScore: boolean;
-    type: ConfettiType
+    type: ConfettiType;
 }
 
-const getConfettiAnimation = (index: number, isPlayerScore = false, isMdScreen: boolean) => {
+const getConfettiAnimation = (index: number, isPlayerScore = false, isMdScreen: boolean, type: ConfettiType) => {
     const randomX = Math.random() * (window.innerWidth / 3) + window.innerWidth / 4;
     const randX = Math.random() * 100 - 200;
     const randomY = Math.random() * 400;
@@ -38,7 +39,7 @@ const getConfettiAnimation = (index: number, isPlayerScore = false, isMdScreen: 
         },
         transition: {
             // delay: 0.2 * (index - previousCardsLengthRef.current),
-            duration: 2,
+            duration: type === ConfettiType.Clubs ? 1.3 : 2,
             delay: 0.3 * index,
             ease: 'easeInOut',
             // repeat: Infinity
@@ -56,12 +57,21 @@ const ConfettiIcon = styled(motion.img)`
     z-index: 100;
 `;
 
-export default function Confetti({isPlayerScore, type = ConfettiType.Bonus} : ConfettiProps) {
+export default function Confetti({isPlayerScore, type = ConfettiType.Clubs} : ConfettiProps) {
     const theme = useContext(ThemeContext);
 
     const getIconsArray = (type: ConfettiType) => {
         const numIcons = theme?.isMdScreen ? 4 : 4;
-        return Array.from({ length: numIcons }, (_, index) => bonusIcons[index % bonusIcons.length]);
+        
+        const confettiIcons = {
+            [ConfettiType.Bonus]: bonusIcons,
+            [ConfettiType.Clubs]: clubsIcons,
+            // Add new types here with their respective icons
+        };
+
+        const selectedIcons = confettiIcons[type] || [];
+
+        return Array.from({ length: numIcons }, (_, index) => selectedIcons[index % selectedIcons.length]);
     };
 
     return (
@@ -70,7 +80,7 @@ export default function Confetti({isPlayerScore, type = ConfettiType.Bonus} : Co
             <ConfettiIcon 
                 key={index}
                 src={icon}
-                {...getConfettiAnimation(index, isPlayerScore, theme?.isMdScreen)}
+                {...getConfettiAnimation(index, isPlayerScore, theme?.isMdScreen, type)}
             />
             ))}
         </ConfettiContainer>

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Button from "./Button";
 import Modal from "./Modal";
 import { ElevenMachineContext } from "../context/AppContext";
-import Confetti from "./Confetti";
+import Confetti, { ConfettiType } from "./Confetti";
 
 interface WelcomeProps {
     onBackClick: () => void;
@@ -92,7 +92,7 @@ export default function Welcome({ onBackClick }: WelcomeProps) {
                 open={state.matches({ welcome: 'rulesModal' })}
                 onClose={() => elevenActorRef.send({ type: 'user.hideRules' })}
             />
-            {/* <Confetti /> */}
+            {/* <Confetti isPlayerScore={false} type={ConfettiType.Clubs}/> */}
         </StyledOverlay>
     )
 }

@@ -37,7 +37,7 @@ export default function GameBoard() {
                     numImages={numOfItems}
                     index={index}
                     onCardClick={() => elevenActorRef.send({type: 'user.selectFlopCard', card: card})}
-                    selected={isCardInCards(card, isPlayerTurn ? playerFlopSelection : botFlopSelection)}
+                    selected={isCardInCards(card, playerFlopSelection.length > 0 ? playerFlopSelection : botFlopSelection)}
                 />
             ))}
         </FlopContainer>

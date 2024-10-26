@@ -81,6 +81,21 @@
       "src": "/icons/tilt.png",
       "type": "image/png",
       "sizes": "512x512"
+    },
+    {
+      "src": "/icons/fivePoints.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/clubsCoin.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/thirteen.png",
+      "type": "image/png",
+      "sizes": "192x192"
     }
   ],
   "start_url": ".",

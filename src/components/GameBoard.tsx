@@ -44,7 +44,7 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
 
-    const { round, isLastHand, playerCards, botCards, playerSidePile, botSidePile, playerHandSelection, botHandSelection, botPoints, botClubs, playerPoints, playerClubs } = state.context;
+    const { round, isLastHand, playerCards, botCards, playerSidePile, botSidePile, playerHandSelection, botHandSelection, botPoints, botClubs, playerPoints, playerClubs, botPreviousClubs, playerPreviousClubs } = state.context;
 
     const theme = useContext(ThemeContext);
 
@@ -52,7 +52,7 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
     console.log(state);
     
     return <GameBoardContainer onClick={() => elevenActorRef.send({ type: 'user.cancelSelection'})}>
-        <Score isPlayerScore={false} points={botPoints} clubs={botClubs} showConfetti={false} />
+        <Score isPlayerScore={false} points={botPoints} clubs={botClubs} previousClubs={botPreviousClubs} />
         <HandContainer>
         {botCards.map((card: CardType, index: number) => (
             <Card
@@ -67,7 +67,7 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
         <Info round={round} isLastHand={isLastHand} />
         <Flop />
         {theme?.isLgScreen && <Pile cards={botSidePile} isPlayerSidePile={false} />}
-        <Score isPlayerScore={true} points={playerPoints} clubs={playerClubs} showConfetti={state.matches({startGame: {startRound: 'playerBonusMove'}})} />
+        <Score isPlayerScore={true} points={playerPoints} clubs={playerClubs} previousClubs={playerPreviousClubs} />
         <PlayerHandContainer>
         {playerCards.map((card: CardType, index: number) => (
             <Card

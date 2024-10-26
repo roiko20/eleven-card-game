@@ -34,9 +34,9 @@ export const fetchDeck = async () => {
 export const fetchResources = async () => {
   try {
     // draw deck
-    // const cards = await fetchDeck();
+    const cards = await fetchDeck();
     // const cards = cardsData;
-    const cards = soorDeck;
+    // const cards = soorDeck;
   
     // preload SVGs
     const cardImagePromises = cards.map((card: CardType) => preloadImage(createCardSVGPath(card)));
@@ -64,7 +64,7 @@ export const dealCards = (deck: CardType[], isPlayerTurn: boolean, dealFlop: boo
     playerCards = deck.slice(4, 8)
   }
   if (dealFlop) {
-    flopCards = deck.slice(8, 11);
+    flopCards = deck.slice(8, 12);
   }
   return { playerCards, botCards, flopCards };
 };
@@ -137,8 +137,11 @@ export const getMoveRank = (cards: CardType[]) => {
   return cards.reduce((rank, card) => rank + getCardRank(card), 0);
 }
 
-export const getCardsScore = (cards: CardType[]) => {
-  return cards.reduce((score, card) => score + getCardScore(card), 0);
+export const getCardsScore = (cards: CardType[], currentNumOfClubs: number) => {
+  const cardsScore = cards.reduce((score, card) => score + getCardScore(card), 0);
+  const updatedNumOfClubs = currentNumOfClubs + getNumOfClubs(cards);
+  const scoredMostClubs = currentNumOfClubs < 7 && updatedNumOfClubs >= 7;
+  return scoredMostClubs ? cardsScore + 13 : cardsScore;
 }
 
 const isClub = (card: CardType) => {

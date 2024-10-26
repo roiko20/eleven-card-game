@@ -1,12 +1,14 @@
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import Confetti, { ConfettiType } from './Confetti';
+import { ElevenMachineContext } from '../context/AppContext';
+import { useEffect, useState } from 'react';
 
 export interface ScoreProps {
     isPlayerScore: boolean;
     points: number;
     clubs: number;
-    showConfetti: boolean;
+    previousClubs: number;
 }
 
 const StyledScoreContainer = styled('div')<{ $isPlayerScore: boolean;}>`
@@ -39,15 +41,30 @@ const StyledScoreItemText = styled('span')`
     font-size: ${({ theme }) => (theme?.isMdScreen ? '24px' : '34px')};
 `;
 
-export default function Score({isPlayerScore, points, clubs, showConfetti}: ScoreProps) {
+export default function Score({ isPlayerScore, points, clubs, previousClubs }: ScoreProps) {
+    const [showClubsConfetti, setShowClubsConfetti] = useState(false);
+    const state = ElevenMachineContext.useSelector((state) => state);
+
+    useEffect(() => {
+        const showBotClubsConfetti = !isPlayerScore && previousClubs < 7 && clubs >= 7;
+        const showPlayerClubsConfetti = isPlayerScore && previousClubs < 7 && clubs >= 7;
+        setShowClubsConfetti(showBotClubsConfetti || showPlayerClubsConfetti)
+    }, [isPlayerScore, previousClubs, clubs]);
+
+    const isBotBonusMove = !isPlayerScore && state.matches({startGame: {startRound: {botTurn: 'botBonusMove'}}});
+    const isPlayerBonusMove = isPlayerScore && state.matches({startGame: {startRound: {playerTurn: 'playerBonusMove'}}});
+
     return (
         <StyledScoreContainer $isPlayerScore={isPlayerScore}>
             <StyledScoreTitle>{isPlayerScore ? 'YOU' : 'BOT'}</StyledScoreTitle>
             <StyledScoreItem>
                 <StyledScoreItemIcon src={'/icons/points.png'} />
                 <StyledScoreItemText>{points}</StyledScoreItemText>
-                {showConfetti && 
+                {(isBotBonusMove || isPlayerBonusMove) && 
                     <Confetti isPlayerScore={isPlayerScore} type={ConfettiType.Bonus} />
+                }
+                {showClubsConfetti &&
+                    <Confetti isPlayerScore={isPlayerScore} type={ConfettiType.Clubs} />
                 }
             </StyledScoreItem>
             <StyledScoreItem>
