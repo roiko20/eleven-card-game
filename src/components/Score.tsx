@@ -51,8 +51,8 @@ export default function Score({ isPlayerScore, points, clubs, previousClubs }: S
         setShowClubsConfetti(showBotClubsConfetti || showPlayerClubsConfetti)
     }, [isPlayerScore, previousClubs, clubs]);
 
-    const isBotBonusMove = !isPlayerScore && state.matches({startGame: {startRound: {botTurn: 'botBonusMove'}}});
-    const isPlayerBonusMove = isPlayerScore && state.matches({startGame: {startRound: {playerTurn: 'playerBonusMove'}}});
+    const isBotBonusMove = !isPlayerScore && state.matches({startGame: {startRound: {roundInProgress: {botTurn: 'botBonusMove'}}}});
+    const isPlayerBonusMove = isPlayerScore && state.matches({startGame: {startRound: {roundInProgress: {playerTurn: 'playerBonusMove'}}}});
 
     return (
         <StyledScoreContainer $isPlayerScore={isPlayerScore}>

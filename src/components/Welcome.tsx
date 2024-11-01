@@ -80,7 +80,7 @@ export default function Welcome({ onBackClick }: WelcomeProps) {
                 <Button
                     text={"NEW GAME"}
                     color={'linear-gradient(-225deg, #DFFFCD 0%, #90F9C4 48%, #39F3BB 100%)'}
-                    onClick={() => elevenActorRef.send({ type: 'user.play' })}
+                    onClick={() => elevenActorRef.send(!gameInProgress ? { type: 'user.play' } : { type: 'user.startNewGame'})}
                 />
                 <Button
                     text={"RULES"}

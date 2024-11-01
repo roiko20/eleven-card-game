@@ -51,7 +51,7 @@ export const fetchResources = async () => {
   }
 }
 
-export const dealCards = (deck: CardType[], isPlayerTurn: boolean, dealFlop: boolean) => {
+export const dealCards = (deck: CardType[], isPlayerTurn: boolean, dealFlop = false) => {
   let playerCards;
   let botCards;
   let flopCards;

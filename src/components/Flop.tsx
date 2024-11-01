@@ -16,13 +16,15 @@ export default function GameBoard() {
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
 
-    const { flopCards, isPlayerTurn, playerFlopSelection, playerHandSelection, botFlopSelection } = state.context;
+    const { flopCards, isPlayerTurn, playerCards, playerFlopSelection, playerHandSelection, botFlopSelection } = state.context;
 
-    const numOfItems = isPlayerTurn ? flopCards.length + 1 : flopCards.length;
+    const showDropArea = isPlayerTurn && playerCards.length > 0;
+
+    const numOfItems = showDropArea ? flopCards.length + 1 : flopCards.length;
 
     return (
         <FlopContainer $numImages={numOfItems}>
-            {isPlayerTurn &&
+            {showDropArea &&
                <Card
                     dropArea={true}
                     numImages={numOfItems}
