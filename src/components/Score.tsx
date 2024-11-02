@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
-import Confetti, { ConfettiType } from './Confetti';
+import ScoreConfetti, { ConfettiType } from './ScoreConfetti';
 import { ElevenMachineContext } from '../context/AppContext';
 import { useEffect, useState } from 'react';
 
@@ -61,10 +61,10 @@ export default function Score({ isPlayerScore, points, clubs, previousClubs }: S
                 <StyledScoreItemIcon src={'/icons/points.png'} />
                 <StyledScoreItemText>{points}</StyledScoreItemText>
                 {(isBotBonusMove || isPlayerBonusMove) && 
-                    <Confetti isPlayerScore={isPlayerScore} type={ConfettiType.Bonus} />
+                    <ScoreConfetti isPlayerScore={isPlayerScore} type={ConfettiType.Bonus} />
                 }
                 {showClubsConfetti &&
-                    <Confetti isPlayerScore={isPlayerScore} type={ConfettiType.Clubs} />
+                    <ScoreConfetti isPlayerScore={isPlayerScore} type={ConfettiType.Clubs} />
                 }
             </StyledScoreItem>
             <StyledScoreItem>

@@ -3,11 +3,6 @@ import styled from "styled-components";
 import Button from "./Button";
 import Modal from "./Modal";
 import { ElevenMachineContext } from "../context/AppContext";
-import Confetti, { ConfettiType } from "./Confetti";
-
-interface WelcomeProps {
-    onBackClick: () => void;
-}
 
 const StyledOverlay = styled(motion.div)`
   height: 100vh;
@@ -30,7 +25,7 @@ const StyledIcon = styled(motion.img)`
     width: 6rem;
 `;
 
-const welcomeVariants = {
+const mainMenuVariants = {
     visible: {
       opacity: 1,
       transition: {
@@ -54,7 +49,7 @@ const itemVariants = {
     },
 };
 
-export default function Welcome({ onBackClick }: WelcomeProps) {
+export default function MainMenu() {
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
 
@@ -62,7 +57,7 @@ export default function Welcome({ onBackClick }: WelcomeProps) {
 
     return (
         <StyledOverlay       
-            variants={welcomeVariants}
+            variants={mainMenuVariants}
             initial="hidden"
             animate="visible"
         >

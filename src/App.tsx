@@ -5,7 +5,7 @@ import { CardType, cardsData } from './lib';
 import GameBoard from './components/GameBoard';
 import useScreenSize from './hooks/useScreenSize';
 import { CARD_BACK_SVG_PATH, DROP_AREA_SVG_PATH, createCardSVGPath, fetchDeck } from './utils';
-import Welcome from './components/Welcome';
+import MainMenu from './components/MainMenu';
 import { ThemeProvider } from 'styled-components';
 import Tilt from './components/Tilt';
 import Loader from './components/Loader';
@@ -88,10 +88,8 @@ function App() {
   return (
     <ThemeProvider theme={{ ...screenSize }}>
        {screenSize.isSmScreen && <Tilt/>}
-        {(state.matches('menu')) &&
-          <Welcome
-            onBackClick={closeMenu}
-          />
+        {state.matches('menu') &&
+          <MainMenu />
         }
         {state.matches('startGame') &&
           <GameBoard onMenuClick={() => console.log('menu')}/>

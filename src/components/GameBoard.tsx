@@ -10,7 +10,7 @@ import Menu from './Menu';
 import { ElevenMachineContext } from '../context/AppContext';
 import { isCardInCards } from '../utils';
 import Flop from './Flop';
-import Confetti from './Confetti';
+import Confetti from './ScoreConfetti';
 import Loader from './Loader';
 import { HandContainer } from './StyledComponents';
 
@@ -37,7 +37,7 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
 
-    const { hasLoaded, round, isLastHand, playerCards, botCards, playerSidePile, botSidePile, playerHandSelection, botHandSelection, botPoints, botClubs, playerPoints, playerClubs, botPreviousClubs, playerPreviousClubs } = state.context;
+    const { round, isLastHand, playerCards, botCards, playerSidePile, botSidePile, playerHandSelection, botHandSelection, botPoints, botClubs, playerPoints, playerClubs, botPreviousClubs, playerPreviousClubs } = state.context;
 
     const theme = useContext(ThemeContext);
 
