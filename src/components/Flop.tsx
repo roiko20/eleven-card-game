@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { ElevenMachineContext } from "../context/AppContext";
 import Card from "./Card";
 import { isCardInCards } from "../utils";
+import ShuffleAnimation from "./ShuffleAnimation";
 
 const FlopContainer = styled(motion.div)<{ $numImages: number;}>`
     display: flex;
@@ -42,6 +43,9 @@ export default function GameBoard() {
                     selected={isCardInCards(card, playerFlopSelection.length > 0 ? playerFlopSelection : botFlopSelection)}
                 />
             ))}
+            {state.matches({startGame: 'endRound'}) &&
+                <ShuffleAnimation />
+            }
         </FlopContainer>
     )
 }

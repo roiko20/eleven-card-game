@@ -34,13 +34,9 @@ function App() {
   // const [loading, setLoading] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // console.log('snapshot:');
-  // console.log(snapshot);
   
   const screenSize = useScreenSize();
-
-  const snapshot = ElevenMachineContext.useSelector((state) => state);
+  const state = ElevenMachineContext.useSelector((state) => state);
 
   // useEffect(() => {
   //   const loadResources = async () => {
@@ -92,16 +88,18 @@ function App() {
   //         onMenuClick={openMenu}
   //       />;
 
+  console.log('app state:');
+  console.log(state);
+
   return (
     <ThemeProvider theme={{ ...defaultTheme, ...screenSize }}>
        {screenSize.isSmScreen && <Tilt/>}
-        {(snapshot.matches('welcome')
-          || snapshot.matches('menu')) &&
+        {(state.matches('menu')) &&
           <Welcome
             onBackClick={closeMenu}
           />
         }
-        {snapshot.matches('startGame') &&
+        {state.matches('startGame') &&
           <GameBoard onMenuClick={() => console.log('menu')}/>
         }
     </ThemeProvider>

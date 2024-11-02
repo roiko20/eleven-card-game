@@ -11,6 +11,7 @@ import { ElevenMachineContext } from '../context/AppContext';
 import { isCardInCards } from '../utils';
 import Flop from './Flop';
 import Confetti from './Confetti';
+import Loader from './Loader';
 
 const GameBoardContainer = styled(motion.div)`
     padding: ${({ theme }) => (theme?.isMdScreen ? '16px 16px 16px 4px' : '32px 32px 32px 16px')};
@@ -44,12 +45,16 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
 
-    const { round, isLastHand, playerCards, botCards, playerSidePile, botSidePile, playerHandSelection, botHandSelection, botPoints, botClubs, playerPoints, playerClubs, botPreviousClubs, playerPreviousClubs } = state.context;
+    const { hasLoaded, round, isLastHand, playerCards, botCards, playerSidePile, botSidePile, playerHandSelection, botHandSelection, botPoints, botClubs, playerPoints, playerClubs, botPreviousClubs, playerPreviousClubs } = state.context;
 
     const theme = useContext(ThemeContext);
 
     console.log('state');
     console.log(state);
+
+    if (state.matches({startGame: 'loading'})) {
+        return <Loader />
+    }
     
     return <GameBoardContainer onClick={() => elevenActorRef.send({ type: 'user.cancelSelection'})}>
         <Score isPlayerScore={false} points={botPoints} clubs={botClubs} previousClubs={botPreviousClubs} />
@@ -82,6 +87,5 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
         </PlayerHandContainer>
         {theme?.isLgScreen && <Pile cards={playerSidePile} />}
         <Menu handleClick={() => elevenActorRef.send({ type: 'user.openMenu' })}/>
-        {/* {state.matches({startGame: {startRound: 'playerBonusMove'}}) && <Confetti />} */}
     </GameBoardContainer>;
 };

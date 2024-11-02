@@ -37,7 +37,7 @@ const StyledModalTitle = styled(motion.h1)`
 const StyledModalSubTitle = styled(motion.h2)`
     font-size: clamp(16px, 2rem, 24px);
     margin-top: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 `;
 
 const StyledCloseIcon = styled.img`
@@ -72,6 +72,10 @@ const StyledListItem = styled('li')`
 
 const StyledIconItem = styled('div')`
     margin: 4px 0;
+`;
+
+const StyledScoringWrapper = styled('div')`
+    margin-top: 6px;
 `;
 
 const StyledScoringContainer = styled('div')`
@@ -164,28 +168,30 @@ const dropIn = {
                                 At the end of each round, the last player to collect flop cards gets all remaining flop cards.
                             <StyledModalSubTitle>Round Scoring</StyledModalSubTitle>
                             26 points are available each round:<br/>
-                            <StyledScoringContainer>
-                                <StyledSpanIconItem>
-                                    <StyledIcon src="/icons/club.png" /> Collect most club suit cards (7+ clubs) - 13 points.
-                                </StyledSpanIconItem>
-                                <StyledSpanIconItem>
-                                    <StyledIcon src="/icons/10ofDiamonds.png" /> Ten of diamonds - 3 points.
-                                </StyledSpanIconItem>
-                            </StyledScoringContainer>
-                            <StyledScoringContainer>
-                                <StyledSpanIconItem>
-                                    <StyledIcon src="/icons/2ofClubs.png" /> Two of clubs - 2 points.
-                                </StyledSpanIconItem>
-                                <StyledSpanIconItem>
-                                    <StyledIcon src="/icons/jack.png" /> Jack (any suit) - 1 point.
-                                </StyledSpanIconItem>
-                                <StyledSpanIconItem>
-                                    <StyledIcon src="/icons/ace.png" /> Ace (any suit) - 1 point.
-                                </StyledSpanIconItem>
-                            </StyledScoringContainer>
-                            <StyledCenteredScoringContainer>
-                                <StyledIcon src="/icons/joker.png" /> Bonus - clear the flop (except for the last round, not using a jack) - 5 points.
-                            </StyledCenteredScoringContainer>
+                            <StyledScoringWrapper>
+                                <StyledScoringContainer>
+                                    <StyledSpanIconItem>
+                                        <StyledIcon src="/icons/club.png" /> Collect most club suit cards (7+ clubs) - 13 points.
+                                    </StyledSpanIconItem>
+                                    <StyledSpanIconItem>
+                                        <StyledIcon src="/icons/10ofDiamonds.png" /> Ten of diamonds - 3 points.
+                                    </StyledSpanIconItem>
+                                </StyledScoringContainer>
+                                <StyledScoringContainer>
+                                    <StyledSpanIconItem>
+                                        <StyledIcon src="/icons/2ofClubs.png" /> Two of clubs - 2 points.
+                                    </StyledSpanIconItem>
+                                    <StyledSpanIconItem>
+                                        <StyledIcon src="/icons/jack.png" /> Jack (any suit) - 1 point.
+                                    </StyledSpanIconItem>
+                                    <StyledSpanIconItem>
+                                        <StyledIcon src="/icons/ace.png" /> Ace (any suit) - 1 point.
+                                    </StyledSpanIconItem>
+                                </StyledScoringContainer>
+                                <StyledCenteredScoringContainer>
+                                    <StyledIcon src="/icons/joker.png" /> Bonus - clear the flop (except for the last round, not using a jack) - 5 points.
+                                </StyledCenteredScoringContainer>
+                            </StyledScoringWrapper>
                         </StyledModalText>
                     </StyledModal>
                 </StyledBackdrop>

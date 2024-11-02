@@ -63,8 +63,13 @@ const elevenMachine = setup({
       round: ({ context }) => context.round + 1
     }),
     dealFirstRoundHand: assign(({ context }) => {
-      const { playerCards, botCards, flopCards } = dealCards(context.cards, context.isPlayerTurn, true);
-      const updatedDeck = context.cards.slice(12);
+      let deck = context.cards;
+      // keep shuffling deck until flop cards (cards[8-12]) have no jacks in them
+      while (deck.slice(8, 12).some(card => card.value === 'JACK')) {
+        deck = shuffleDeck(deck);
+      }
+      const { playerCards, botCards, flopCards } = dealCards(deck, context.isPlayerTurn, true);
+      const updatedDeck = deck.slice(12);
       return {
         playerCards: playerCards,
         botCards: botCards,
@@ -85,7 +90,7 @@ const elevenMachine = setup({
       };
     }),
     handleBotMove: assign(({ context }) => {
-      const bestMove = getBestMove(context.botCards, context.flopCards);
+      const bestMove = getBestMove(context.botCards, context.flopCards, context.isLastHand);
       // no moves - set drop card selection
       if (!bestMove) {
         const cardToDrop = getBestCardToDrop(context.botCards);
@@ -150,6 +155,7 @@ const elevenMachine = setup({
       }
     }),
     dropPlayerCard: assign({
+      playerFlopSelection: [],
       flopCards: ({ context }) => [context.playerHandSelection!, ...context.flopCards],
       playerCards: ({ context }) => removeCardsFromCards([context.playerHandSelection!], context.playerCards),
       lastPlayedHandCard: ({ context }) => context.playerHandSelection,
@@ -268,6 +274,7 @@ const elevenMachine = setup({
     })
   },
   guards: {
+    hasLoaded: ({ context }) => context.hasLoaded,
     isPlayerHandCardSelected: ({ context }) => !!context.playerHandSelection,
     isValidMove: ({ context, event }) => {
       // assertEvent(event, 'user.selectAnswer');
@@ -316,12 +323,20 @@ const elevenMachine = setup({
   //   })
   // },
   actors: {
-    loadInitialResources: fromPromise(fetchResources),
-    loadNewDeck: fromPromise(fetchDeck)
+    loadInitialResources: fromPromise(fetchResources)
   }
 }).createMachine({
+  invoke: {
+    src: 'loadInitialResources',
+    onDone: {
+      actions: assign({
+        cards: ({ event }) => event.output,
+        hasLoaded: true
+      }),
+    },
+  },
   id: 'elevenMachine',
-  initial: 'welcome',
+  initial: 'menu',
   context: {
     cards: [],
     hasLoaded: false,
@@ -349,17 +364,8 @@ const elevenMachine = setup({
     botFlopSelection: []
   },
   states: {
-    welcome: {
-      id: 'welcome',
-      invoke: {
-        src: 'loadInitialResources',
-        onDone: {
-          actions: assign({
-            cards: ({ event }) => event.output,
-            hasLoaded: true
-          })
-        }
-      },
+    menu: {
+      id: 'menu',
       initial: 'mainMenu',
       states: {
         mainMenu: {
@@ -369,6 +375,12 @@ const elevenMachine = setup({
             },
             'user.play': {
               target: '#startGame'
+            },
+            'user.closeMenu': {
+              target: '#startGame.history'
+            },
+            'user.startNewGame': {
+              target: '#newGame'
             },
           }
         },
@@ -382,14 +394,9 @@ const elevenMachine = setup({
         },
       }
     },
-    menu: {
-      id: 'menu',
-
-      }
-    },
     startGame: {
       id: 'startGame',
-      initial: 'startRound',
+      initial: 'loading',
       // entry: ['newGame'],
       entry: assign({
         gameInProgress: true
@@ -403,6 +410,10 @@ const elevenMachine = setup({
         history: {
           type: 'history',
           history: 'deep'
+        },
+        loading: {
+          id: 'loading',
+          always: { target: 'startRound', guard: 'hasLoaded'}
         },
         startRound: {
           id: 'startRound',
@@ -443,13 +454,21 @@ const elevenMachine = setup({
                 },
                 botTurn: {
                   id: 'botTurn',
-                  initial: 'setMove',
+                  initial: 'delayMove',
                   states: {
+                    delayMove: {
+                      id: 'delayMove',
+                      after: {
+                        1000: {
+                          target: 'setMove'
+                        }
+                      }
+                    },
                     setMove: {
                       id: 'setMove',
                       entry: 'handleBotMove',
                       after: {
-                        2000: {
+                        1500: {
                           target: '#botMoveUpdateBoard'
                         }
                       }
@@ -540,7 +559,7 @@ const elevenMachine = setup({
               always: [
                 { target: '#pickUpRemainingFlop', guard: 'isRoundOverWithRemainingFlop' },
                 { target: '#endRound', guard: 'isRoundOver'},
-                { target: '.dealCards', guard: 'isHandOver' },
+                { target: '.dealCards', guard: and(['isHandOver', not('isBonusMove')]) },
                 // { target: '.dealCards', guard: and(['isHandOver', not('isRoundOver')]) },
               ],
             },
@@ -557,7 +576,7 @@ const elevenMachine = setup({
               id: 'updateBoardFinalMove',
               entry: 'updateFinalMove',
               after: {
-                1800: {
+                1500: {
                   target: '#endRound'
                 }
               }
@@ -567,9 +586,14 @@ const elevenMachine = setup({
         endRound: {
           id: 'endRound',
           entry: ['handleEndRound', 'handleToggleTurn'],
-          always: { target: 'startRound' }
+          after: {
+            2800: {
+              target: 'startRound'
+            }
+          }
         }
-      }
+      },
+      always: { target: '.loading', guard: not('hasLoaded') }
     },
     newGame: {
       id: 'newGame',

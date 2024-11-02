@@ -34,7 +34,8 @@ export const fetchDeck = async () => {
 export const fetchResources = async () => {
   try {
     // draw deck
-    const cards = await fetchDeck();
+    console.log('fetching resources');
+   const cards = await fetchDeck();
     // const cards = cardsData;
     // const cards = soorDeck;
   
@@ -133,6 +134,10 @@ export const getCardScore = (card: CardType): number => {
   return 0;
 }
 
+const isNonRankedCardAvailable = (cards: CardType[]): boolean => {
+  return cards.some((card) => getCardRank(card) === 0)
+}
+
 export const getMoveRank = (cards: CardType[]) => {
   return cards.reduce((rank, card) => rank + getCardRank(card), 0);
 }
@@ -209,7 +214,7 @@ export const selectCardsByRoyalty = (cards: CardType[], isRoyaltyFilter: boolean
   return cards.filter(card => isRoyalty(card) === isRoyaltyFilter);
 }
 
-export const getBestMove = (hand: CardType[], flop: CardType[]): Move | null => {
+export const getBestMove = (hand: CardType[], flop: CardType[], isLastHand: boolean): Move | null => {
   let validMoves: Move[] = [];
 
   const pickCardsFromFlop = (pickedCards: CardType[], remainingFlop: CardType[]) => {
@@ -243,10 +248,16 @@ export const getBestMove = (hand: CardType[], flop: CardType[]): Move | null => 
       const nonRoyaltyCards = selectCardsByRoyalty(flop, false);
       // jack pick up is allowed only if there are non-royality cards in flop
       if (nonRoyaltyCards.length > 0) {
+        // get jack move rank
+        const jackMoveRank = getMoveRank([cardInHand, ...nonRoyaltyCards]);
+        // add jack move if it's greater than jack rank (1)
+        // or, some non-ranked card is available to drop instead
+        // prefer to save jack move for later - player might drop ranked cards
+        if (jackMoveRank > 1 || isNonRankedCardAvailable(hand))
         validMoves.push({
           handCard: cardInHand,
           flopCards: nonRoyaltyCards,
-          scoreRank: getMoveRank([cardInHand, ...nonRoyaltyCards])
+          scoreRank: jackMoveRank
         })
       }
     }
@@ -261,8 +272,10 @@ export const getBestMove = (hand: CardType[], flop: CardType[]): Move | null => 
         })
       })
     }
-    // check sum of eleven move
-    pickCardsFromFlop([cardInHand], flop);
+    else {
+      // check sum of eleven move
+      pickCardsFromFlop([cardInHand], flop);
+    }
   }
 
   console.log('valid moves:');
@@ -273,12 +286,17 @@ export const getBestMove = (hand: CardType[], flop: CardType[]): Move | null => 
     return null;
   }
 
+  // update bonus rank for moves
+  validMoves = validMoves.map((currentMove) => {
+    return {
+      ...currentMove,
+      scoreRank: currentMove.scoreRank + (isBonusMove(currentMove, flop, isLastHand) ? 5 : 0)
+    }
+  })
+
   const bestMove = validMoves.reduce((bestMove, currentMove) => {
     return currentMove.scoreRank > bestMove.scoreRank ? currentMove : bestMove;
   }, validMoves[0]);
-
-  console.log('best move:');
-  console.log(bestMove);
 
   return bestMove;
 }
@@ -299,4 +317,13 @@ export const shuffleDeck = (cards: CardType[]) => {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
+}
+
+const isBonusMove = (move: Move, flop: CardType[], isLastHand: boolean) => {
+  // last round hand or jack hand card used - no bonus
+  if (move.handCard.value === 'JACK' || isLastHand) {
+    return false;
+  }
+  // all flop cards selected - bonus move
+  return move.flopCards.length === flop.length;
 }

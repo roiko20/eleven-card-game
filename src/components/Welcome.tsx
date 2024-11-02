@@ -34,7 +34,7 @@ const welcomeVariants = {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.7
+        staggerChildren: 0.5
       }
     },
     hidden: {
@@ -46,7 +46,7 @@ const itemVariants = {
     visible: {
       opacity: 1,
       transition: {
-        duration: 0.9
+        duration: 0.5
       }
     },
     hidden: {
@@ -69,18 +69,17 @@ export default function Welcome({ onBackClick }: WelcomeProps) {
             <StyledIcon src={'/icons/clubs.svg'} variants={itemVariants} />
             <motion.h1 variants={itemVariants} >Eleven</motion.h1>
             <StyledActions variants={itemVariants}>
-                {
-                    gameInProgress &&
-                        <Button
-                            text={"BACK TO GAME"}
-                            color={'linear-gradient(-225deg, #E0C3FC 0%, #B19FFF 48%, #ECA1FE 100%)'}
-                            onClick={() => elevenActorRef.send({ type: 'user.closeMenu' })}
-                        />
+                {gameInProgress &&
+                    <Button
+                        text={"BACK TO GAME"}
+                        color={'linear-gradient(120deg, #f6d365 0%, #ffee58 100%)'}
+                        onClick={() => elevenActorRef.send({ type: 'user.closeMenu' })}
+                    />
                 }
                 <Button
                     text={"NEW GAME"}
                     color={'linear-gradient(-225deg, #DFFFCD 0%, #90F9C4 48%, #39F3BB 100%)'}
-                    onClick={() => elevenActorRef.send(!gameInProgress ? { type: 'user.play' } : { type: 'user.startNewGame'})}
+                    onClick={() => elevenActorRef.send(gameInProgress ? { type: 'user.startNewGame'} : { type: 'user.play' })}
                 />
                 <Button
                     text={"RULES"}
@@ -89,7 +88,7 @@ export default function Welcome({ onBackClick }: WelcomeProps) {
                 />
             </StyledActions>
             <Modal
-                open={state.matches({ welcome: 'rulesModal' })}
+                open={state.matches({ menu: 'rulesModal' })}
                 onClose={() => elevenActorRef.send({ type: 'user.hideRules' })}
             />
             {/* <Confetti isPlayerScore={false} type={ConfettiType.Clubs}/> */}
