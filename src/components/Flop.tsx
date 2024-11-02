@@ -4,14 +4,11 @@ import { ElevenMachineContext } from "../context/AppContext";
 import Card from "./Card";
 import { isCardInCards } from "../utils";
 import ShuffleAnimation from "./ShuffleAnimation";
+import { HandContainer } from "./StyledComponents";
 
-const FlopContainer = styled(motion.div)<{ $numImages: number;}>`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+const FlopContainer = styled(HandContainer)<{ $numImages: number;}>`
     grid-row-start: 2;
-    grid-column-start: ${({ $numImages }) => ($numImages > 6 && ('span 2'))};
+    grid-column-start: ${({ $numImages }) => ($numImages > 6 && 'span 2')};
 `;
 
 export default function GameBoard() {

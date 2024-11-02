@@ -12,6 +12,7 @@ import { isCardInCards } from '../utils';
 import Flop from './Flop';
 import Confetti from './Confetti';
 import Loader from './Loader';
+import { HandContainer } from './StyledComponents';
 
 const GameBoardContainer = styled(motion.div)`
     padding: ${({ theme }) => (theme?.isMdScreen ? '16px 16px 16px 4px' : '32px 32px 32px 16px')};
@@ -23,14 +24,7 @@ const GameBoardContainer = styled(motion.div)`
     row-gap: 6%;
 `;
 
-const HandContainer = styled(motion.div)`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-`;
-
-const PlayerHandContainer = styled(motion(HandContainer))`
+const PlayerHandContainer = styled(HandContainer)`
     grid-row-start: 3;
     grid-column-start: 2;
 `;

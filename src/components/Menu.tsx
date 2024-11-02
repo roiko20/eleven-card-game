@@ -12,8 +12,8 @@ const StyledMenuItemContainer = styled('div')`
 `;
 
 const StyledMenuItem = styled('img')`
-    width: ${({ theme }) => theme?.isMdScreen ? '48px' : '64px'};
-    height: ${({ theme }) => theme?.isMdScreen ? '48px' : '64px'};
+    width: ${({ theme }) => theme?.isMdScreen ? '36px' : '64px'};
+    height: ${({ theme }) => theme?.isMdScreen ? '36px' : '64px'};
 `;
 
 export default function Menu({handleClick}: MenuProps) {
