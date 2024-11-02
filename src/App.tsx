@@ -13,12 +13,6 @@ import elevenMachine from './state/elevenMachine';
 import { useMachine } from '@xstate/react';
 import { ElevenMachineContext } from './context/AppContext';
 
-const defaultTheme = {
-  isSmScreen: false,
-  isMdScreen: false,
-  isLgScreen: true,
-};
-
 const preloadImage = (src: string) => {
   return new Promise<void>((resolve, reject) => {
     const img = new Image();
@@ -92,7 +86,7 @@ function App() {
   console.log(state);
 
   return (
-    <ThemeProvider theme={{ ...defaultTheme, ...screenSize }}>
+    <ThemeProvider theme={{ ...screenSize }}>
        {screenSize.isSmScreen && <Tilt/>}
         {(state.matches('menu')) &&
           <Welcome

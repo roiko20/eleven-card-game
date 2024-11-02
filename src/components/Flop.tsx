@@ -10,7 +10,8 @@ const FlopContainer = styled(motion.div)<{ $numImages: number;}>`
     align-items: center;
     justify-content: center;
     gap: 6px;
-    grid-column-start: ${({ theme, $numImages }) => ($numImages > 6 && (theme?.isMdScreen ? 'span 1': 'span 2'))};
+    grid-row-start: 2;
+    grid-column-start: ${({ $numImages }) => ($numImages > 6 && ('span 2'))};
 `;
 
 export default function GameBoard() {

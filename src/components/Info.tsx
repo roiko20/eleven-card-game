@@ -24,7 +24,7 @@ const StyledRoundTextContainer = styled('span')`
 `;
 
 const StyledRoundText = styled('span')`
-    font-size: ${({ theme }) => (theme?.isMdScreen ? '18px' : '24px')};
+    font-size: ${({ theme }) => (theme?.isPortrait ? '22px' : (theme?.isMdScreen ? '18px' : '24px'))};
     text-align: center;
 `;
 

@@ -12,16 +12,17 @@ const PileContainer = styled(motion.div)<{ $isPlayerSidePile?: boolean; }>`
   grid-row-start: ${({ $isPlayerSidePile }) => ($isPlayerSidePile ? '3' : '1')};
   grid-column-start: 3;
   position: relative;
-  margin-right: 36px;
-//   margin-top: ${({ $isPlayerSidePile }) => ($isPlayerSidePile && '44px')};
-//   margin-bottom: ${({ $isPlayerSidePile, theme }) => ($isPlayerSidePile && theme?.isMdScreen && '44px')};
+  margin-right: ${({ theme }) => (theme?.isLgScreen ? '24px' : '16px')};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const PileCard = styled(motion.img)<{ index: number; $isPlayerSidePile?: boolean; }>`
     position: absolute;
     right: ${({ index, $isPlayerSidePile }) => (`${index * ($isPlayerSidePile ? -1.35 : -0.75)}px`)};
-    height: 99%;
-    border-radius: ${({ $isPlayerSidePile }) => ($isPlayerSidePile ? '18px' : '8px')};
+    height: ${({ theme }) => (theme?.isLgScreen ? '90%' : '80%')};
+    border-radius: ${({ $isPlayerSidePile }) => $isPlayerSidePile ? '8px' : '4px'};
     box-shadow: ${({ $isPlayerSidePile }) => ($isPlayerSidePile ? '1px 1px 4px #424242' : '1px 1px 2.5px #424242')};
 `;
 

@@ -17,7 +17,7 @@ const GameBoardContainer = styled(motion.div)`
     padding: ${({ theme }) => (theme?.isMdScreen ? '16px 16px 16px 4px' : '32px 32px 32px 16px')};
     display: grid;
     grid-template-rows: 22% 35% 31%;
-    grid-template-columns: ${({ theme }) => (!theme?.isLgScreen ? '12% 88%': '13% auto 13%')};
+    grid-template-columns: ${({ theme }) => (theme?.isPortrait ? '12% 88%' : '13% auto 13%')};
     box-sizing: border-box;
     height: 100vh;
     row-gap: 6%;
@@ -26,13 +26,11 @@ const GameBoardContainer = styled(motion.div)`
 const HandContainer = styled(motion.div)`
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 6px;
 `;
 
-const PlayerHandContainer = styled(motion.div)`
-    display: flex;
-    justify-content: center;
-    gap: 6px;
+const PlayerHandContainer = styled(motion(HandContainer))`
     grid-row-start: 3;
     grid-column-start: 2;
 `;
@@ -66,12 +64,13 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
                 // showBack={true}
                 index={index}
                 selected={card.code === botHandSelection?.code}
+                numImages={botCards.length}
             />
         ))}
         </HandContainer>
         <Info round={round} isLastHand={isLastHand} />
         <Flop />
-        {theme?.isLgScreen && <Pile cards={botSidePile} isPlayerSidePile={false} />}
+        {!theme?.isPortrait && <Pile cards={botSidePile} isPlayerSidePile={false} />}
         <Score isPlayerScore={true} points={playerPoints} clubs={playerClubs} previousClubs={playerPreviousClubs} />
         <PlayerHandContainer>
         {playerCards.map((card: CardType, index: number) => (
@@ -79,13 +78,13 @@ export default function GameBoard({ onMenuClick }: GameBoardProps) {
                 key={card.code}
                 card={card}
                 index={index}
-                numImages={4}
                 onCardClick={() => elevenActorRef.send({type: 'user.selectHandCard', card: card})}
                 selected={card.code === playerHandSelection?.code}
+                numImages={playerCards.length}
             />
         ))}
         </PlayerHandContainer>
-        {theme?.isLgScreen && <Pile cards={playerSidePile} />}
+        {!theme?.isPortrait && <Pile cards={playerSidePile} />}
         <Menu handleClick={() => elevenActorRef.send({ type: 'user.openMenu' })}/>
     </GameBoardContainer>;
 };
