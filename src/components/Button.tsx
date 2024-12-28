@@ -12,12 +12,13 @@ const StyledButton = styled(motion.button)<{ $color: string; }>`
     height: 3rem;
     border: none;
     border-radius: 4px;
-    font-size: 1.4rem;
+    font-size: ${({ theme }) => (theme?.isMdScreen ? '1.2rem' : '1.4rem')};
     letter-spacing: 1.25px;
     cursor: pointer;
     padding: 0 1rem;
     font-family: "Patua One", serif;
     background-image: ${({ $color }) => $color};
+    white-space: nowrap;
 `;
 
 export default function Button({text, onClick, color}: ButtonProps) {

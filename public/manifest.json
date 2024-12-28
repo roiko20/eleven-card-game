@@ -20,7 +20,7 @@
     {
       "src": "/icons/close.svg",
       "type": "image/svg+xml",
-      "sizes": "any"
+      "sizes": "192x192"
     },
     {
       "src": "/icons/club.png",
@@ -30,7 +30,7 @@
     {
       "src": "/icons/clubs.svg",
       "type": "image/svg+xml",
-      "sizes": "any"
+      "sizes": "192x192"
     },
     {
       "src": "/icons/eleven.png",
@@ -94,6 +94,31 @@
     },
     {
       "src": "/icons/thirteen.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/win.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/hat.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/bot.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/botLove.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/hat2.png",
       "type": "image/png",
       "sizes": "192x192"
     }

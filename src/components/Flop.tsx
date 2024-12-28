@@ -11,13 +11,14 @@ const FlopContainer = styled(HandContainer)<{ $numImages: number;}>`
     grid-column-start: ${({ $numImages }) => ($numImages > 6 && 'span 2')};
 `;
 
-export default function GameBoard() {
+export default function Flop() {
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
 
     const { flopCards, isPlayerTurn, playerCards, playerFlopSelection, playerHandSelection, botFlopSelection } = state.context;
 
     const showDropArea = isPlayerTurn && playerCards.length > 0;
+    // don't show drop area while player bonus
 
     const numOfItems = showDropArea ? flopCards.length + 1 : flopCards.length;
 

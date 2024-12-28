@@ -1,4 +1,4 @@
-import { and, assertEvent, assign, fromPromise, not, setup } from 'xstate';
+import { and, assertEvent, assign, fromPromise, not, or, setup } from 'xstate';
 import { CardType } from "../lib";
 // import { RickCharacters } from './services/RickApi';
 // import { getRandomNumber } from './common/constants';
@@ -7,51 +7,45 @@ import { Context } from 'react-responsive';
 
 interface ElevenContext {
   cards: CardType[];
-    hasLoaded: boolean;
-    error: string;
-    gameInProgress: boolean;
-    round: number;
-    isPlayerTurn: boolean;
-    isLastHand: boolean;
-    lastPlayedHandCard: CardType | null;
-    isPlayerLastToCollect: boolean;
-    playerPoints: number;
-    playerPreviousClubs: number;
-    playerClubs: number;
-    playerCards: CardType[];
-    playerSidePile: CardType[];
-    playerHandSelection: CardType | null;
-    playerFlopSelection: CardType[],
-    flopCards: CardType[];
-    botPoints: number;
-    botPreviousClubs: number;
-    botClubs: number;
-    botCards: CardType[];
-    botSidePile: CardType[];
-    botHandSelection: CardType | null;
-    botFlopSelection: CardType[];
+  hasLoaded: boolean;
+  error: string;
+  gameInProgress: boolean;
+  continueGame: boolean;
+  round: number;
+  isPlayerTurn: boolean;
+  isLastHand: boolean;
+  lastPlayedHandCard: CardType | null;
+  isPlayerLastToCollect: boolean;
+  playerPoints: number;
+  playerPreviousClubs: number;
+  playerClubs: number;
+  playerCards: CardType[];
+  playerSidePile: CardType[];
+  playerHandSelection: CardType | null;
+  playerFlopSelection: CardType[],
+  flopCards: CardType[];
+  botPoints: number;
+  botPreviousClubs: number;
+  botClubs: number;
+  botCards: CardType[];
+  botSidePile: CardType[];
+  botHandSelection: CardType | null;
+  botFlopSelection: CardType[];
 }
 
 type ElevenEvents =
   | { type: 'user.play' }
-  | { type: 'user.showRules'}
+  | { type: 'user.showRules' }
   | { type: 'user.hideRules' }
   | { type: 'user.openMenu' }
-  | { type: 'user.closeMenu'}
+  | { type: 'user.closeMenu' }
   | { type: 'user.startNewGame' }
+  | { type: 'user.resumeGame' }
   | { type: 'user.selectHandCard', card: CardType }
   | { type: 'user.selectFlopCard', card: CardType }
   | { type: 'user.dropCard' }
   | { type: 'user.cancelSelection' }
-  | { type: 'user.reject' }
-  | { type: 'user.accept' }
-  | {
-      type: 'user.selectAnswer';
-      answer: number;
-    }
-  | { type: 'user.nextQuestion' }
-  | { type: 'user.playAgain' };
-
+  | { type: 'user.mainMenu' }
 
 const elevenMachine = setup({
   types: {
@@ -101,7 +95,7 @@ const elevenMachine = setup({
 
       // set selection by best move
       const { handCard, flopCards } = bestMove;
-      
+
       return {
         botHandSelection: handCard,
         botFlopSelection: flopCards
@@ -146,12 +140,12 @@ const elevenMachine = setup({
         playerHandSelection: compareCards(context.playerHandSelection, event.card) ? null : event.card,
       }
     }),
-    setPlayerFlopSelection: assign(({ context, event}) => {
+    setPlayerFlopSelection: assign(({ context, event }) => {
       assertEvent(event, 'user.selectFlopCard');
       return {
         playerFlopSelection: isCardInCards(event.card, context.playerFlopSelection)
-        ? removeCardsFromCards([event.card], context.playerFlopSelection)
-        : [...context.playerFlopSelection, event.card],
+          ? removeCardsFromCards([event.card], context.playerFlopSelection)
+          : [...context.playerFlopSelection, event.card],
       }
     }),
     dropPlayerCard: assign({
@@ -212,15 +206,15 @@ const elevenMachine = setup({
         }
       }
       return {
-          botSidePile: [
-            ...context.botSidePile,
-            ...context.botFlopSelection
-          ],
-          botPoints: context.botPoints + getCardsScore([...context.botFlopSelection], context.botClubs),
-          botPreviousClubs: context.botClubs,
-          botClubs: context.botClubs + getNumOfClubs([...context.botFlopSelection]),
-          flopCards: removeCardsFromCards(context.botFlopSelection, context.flopCards),
-          botFlopSelection: [],
+        botSidePile: [
+          ...context.botSidePile,
+          ...context.botFlopSelection
+        ],
+        botPoints: context.botPoints + getCardsScore([...context.botFlopSelection], context.botClubs),
+        botPreviousClubs: context.botClubs,
+        botClubs: context.botClubs + getNumOfClubs([...context.botFlopSelection]),
+        flopCards: removeCardsFromCards(context.botFlopSelection, context.flopCards),
+        botFlopSelection: [],
       }
     }),
     handleEndRound: assign(({ context }) => {
@@ -253,6 +247,7 @@ const elevenMachine = setup({
         round: 0,
         isPlayerTurn: true,
         isLastHand: false,
+        continueGame: false,
         lastPlayedHandCard: null,
         isPlayerLastToCollect: false,
         playerPoints: 0,
@@ -271,6 +266,12 @@ const elevenMachine = setup({
         botHandSelection: null,
         botFlopSelection: []
       }
+    }),
+    handleContinueGame: assign({
+      continueGame: true
+    }),
+    handleEndGameMenu: assign({
+      gameInProgress: false
     })
   },
   guards: {
@@ -284,44 +285,19 @@ const elevenMachine = setup({
     isBonusMove: ({ context }) => context.flopCards.length === 0 && !context.isLastHand && context.lastPlayedHandCard?.value !== 'JACK',
     // isBotMostClubsMove: ({ context }) => context.botPreviousClubs < 7 && context.botClubs >= 7,
     // isPlayerMostClubsMove: ({ context }) => context.playerPreviousClubs < 7 && context.playerClubs >= 7,
-    isRoundOverWithRemainingFlop : ({ context }) => context.isLastHand && context.flopCards.length > 0 && context.botCards.length === 0 && context.playerCards.length === 0,
+    isRoundOverWithRemainingFlop: ({ context }) => context.isLastHand && context.flopCards.length > 0 && context.botCards.length === 0 && context.playerCards.length === 0,
     isRoundOver: ({ context }) => context.isLastHand && context.botCards.length === 0 && context.playerCards.length === 0,
     isHandOver: ({ context }) => context.botCards.length === 0 && context.playerCards.length === 0,
     // isLastHand: ({ context }) => context.isLastHand,
+    hasWonGame: ({ context }) => {
+      return context.playerPoints >= 104;
+    },
     hasLostGame: ({ context }) => {
       return context.botPoints >= 104;
     },
     isBotTurn: ({ context }) => !context.isPlayerTurn,
-    hasWonGame: ({ context }) => {
-      return context.playerPoints >= 104;
-    }
+    isContinueGame: ({ context }) => context.continueGame
   },
-  // actions: {
-  //   // goToTriviaPage: () => {},
-  //   newGame: assign({
-  //     cards: [], // TODO: add new deck cards
-  //     round: 0,
-  //     isPlayerTurn: false,
-  //     isLastHand: false,
-  //     lastPlayedHandCard: null,
-  //     isPlayerLastToCollect: false,
-  //     playerPoints: 0,
-  //     playerPreviousClubs: 0,
-  //     playerClubs: 0,
-  //     playerCards: [],
-  //     playerSidePile: [],
-  //     playerHandSelection: null,
-  //     playerFlopSelection: [],
-  //     flopCards: [],
-  //     botPoints: 0,
-  //     botPreviousClubs: 0,
-  //     botClubs: 0,
-  //     botCards: [],
-  //     botSidePile: [],
-  //     botHandSelection: null,
-  //     botFlopSelection: []
-  //   })
-  // },
   actors: {
     loadInitialResources: fromPromise(fetchResources)
   }
@@ -342,12 +318,13 @@ const elevenMachine = setup({
     hasLoaded: false,
     error: '',
     gameInProgress: false,
+    continueGame: false,
     round: 0,
     isPlayerTurn: true,
     isLastHand: false,
     lastPlayedHandCard: null,
     isPlayerLastToCollect: false,
-    playerPoints: 0,
+    playerPoints: 103,
     playerPreviousClubs: 0,
     playerClubs: 0,
     playerCards: [],
@@ -397,7 +374,6 @@ const elevenMachine = setup({
     startGame: {
       id: 'startGame',
       initial: 'loading',
-      // entry: ['newGame'],
       entry: assign({
         gameInProgress: true
       }),
@@ -413,7 +389,7 @@ const elevenMachine = setup({
         },
         loading: {
           id: 'loading',
-          always: { target: 'startRound', guard: 'hasLoaded'}
+          always: { target: 'startRound', guard: 'hasLoaded' }
         },
         startRound: {
           id: 'startRound',
@@ -436,10 +412,10 @@ const elevenMachine = setup({
                   id: 'decideTurn',
                   always: [
                     { target: '#pickUpRemainingFlop', guard: 'isRoundOverWithRemainingFlop' },
-                    { target: '#endRound', guard: 'isRoundOver'},
+                    { target: '#endRound', guard: 'isRoundOver' },
                     { target: 'dealCards', guard: 'isHandOver' },
-                    { target: 'botTurn', guard: 'isBotTurn'},
-                    { target: 'playerTurn', guard: not('isBotTurn')}
+                    { target: 'botTurn', guard: 'isBotTurn' },
+                    { target: 'playerTurn', guard: not('isBotTurn') }
                   ]
                 },
                 dealCards: {
@@ -478,7 +454,6 @@ const elevenMachine = setup({
                       entry: 'updateBotMove',
                       always: [
                         { target: 'botBonusMove', guard: 'isBonusMove' },
-                        // { target: '#decideTurn', guard: and([not('isBonusMove'), not('isRoundOver')]) } 
                         { target: '#toggleTurn', guard: not('isBonusMove') }
                       ]
                     },
@@ -540,8 +515,7 @@ const elevenMachine = setup({
                       entry: ['updatePlayerMove'],
                       always: [
                         { target: 'playerBonusMove', guard: 'isBonusMove' },
-                        // { target: '#decideTurn', guard: and([not('isBonusMove'), not('isRoundOver')]) }
-                        { target: '#toggleTurn', guard: not('isBonusMove')}
+                        { target: '#toggleTurn', guard: not('isBonusMove') }
                       ]
                     },
                     playerBonusMove: {
@@ -558,9 +532,8 @@ const elevenMachine = setup({
               },
               always: [
                 { target: '#pickUpRemainingFlop', guard: 'isRoundOverWithRemainingFlop' },
-                { target: '#endRound', guard: 'isRoundOver'},
+                { target: '#endRound', guard: 'isRoundOver' },
                 { target: '.dealCards', guard: and(['isHandOver', not('isBonusMove')]) },
-                // { target: '.dealCards', guard: and(['isHandOver', not('isRoundOver')]) },
               ],
             },
             pickUpRemainingFlop: {
@@ -593,12 +566,51 @@ const elevenMachine = setup({
           }
         }
       },
-      always: { target: '.loading', guard: not('hasLoaded') }
+      always: [
+        { target: '.loading', guard: not('hasLoaded') },
+        { target: 'gameOver', guard: and([or(['hasWonGame', 'hasLostGame']), not('isContinueGame')]) }
+      ]
     },
     newGame: {
       id: 'newGame',
       entry: 'handleNewGame',
-      always: { target: 'startGame'}
+      after: {
+        2800: {
+          target: 'startGame'
+        }
+      }
+    },
+    gameOver: {
+      id: 'gameOver',
+      initial: 'decideWinner',
+      states: {
+        decideWinner: {
+          id: 'decideWinner',
+          always: [
+            { target: 'playerWin', guard: 'hasWonGame' },
+            { target: 'botWin', guard: 'hasLostGame' }
+          ]
+        },
+        playerWin: {
+          id: 'playerWin',
+        },
+        botWin: {
+          id: 'botWin'
+        }
+      },
+      on: {
+        'user.startNewGame': {
+          target: 'newGame'
+        },
+        'user.resumeGame': {
+          actions: 'handleContinueGame',
+          target: '#startGame.history'
+        },
+        'user.mainMenu': {
+          actions: ['handleEndGameMenu', 'handleNewGame'],
+          target: '#menu'
+        }
+      }
     }
   }
 });

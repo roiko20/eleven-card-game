@@ -3,15 +3,20 @@ import styled from "styled-components";
 import Button from "./Button";
 import Modal from "./Modal";
 import { ElevenMachineContext } from "../context/AppContext";
+import { useEffect, useState } from "react";
 
 const StyledOverlay = styled(motion.div)`
-  height: 100vh;
-  display: flex;
-  gap: 8px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.1); /* Semi-transparent overlay */
+    height: 100vh;
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.1);
+`;
+
+const StyledTitle = styled(motion.h1)`
+    margin: 16px 0;
 `;
 
 const StyledActions = styled(motion.div)`
@@ -22,15 +27,33 @@ const StyledActions = styled(motion.div)`
 `;
 
 const StyledIcon = styled(motion.img)`
-    width: 6rem;
+    width: ${({ theme }) => (theme?.isMdScreen ? '5rem' : '6rem')};
+`;
+
+const StyledCredits = styled(motion.div)`
+    position: absolute;
+    bottom: 8px;
+    right: ${({ theme }) => (theme?.isMdScreen ? '8px' : '16px')};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: ${({ theme }) => (theme?.isMdScreen ? '8px' : '10px')};
+`;
+
+const StyledCreditsLinekdinIcon = styled.img`
+    width: ${({ theme }) => (theme?.isMdScreen ? '2rem' : '2.5rem')};
+`;
+
+const StyledCreditsGitIcon = styled.img`
+    width: ${({ theme }) => (theme?.isMdScreen ? '2.13rem' : '2.6rem')};
 `;
 
 const mainMenuVariants = {
     visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.5
-      }
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.5
+        }
     },
     hidden: {
         opacity: 0
@@ -39,34 +62,40 @@ const mainMenuVariants = {
 
 const itemVariants = {
     visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.5
-      }
+        opacity: 1,
+        transition: {
+            duration: 0.5
+        }
     },
     hidden: {
-      opacity: 0
+        opacity: 0
     },
 };
 
 export default function MainMenu() {
+    const [initialLoad, setInitialLoad] = useState(true);
+
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
 
     const { gameInProgress } = state.context;
 
+    useEffect(() => {
+        setInitialLoad(false);
+    }, []);
+
     return (
-        <StyledOverlay       
+        <StyledOverlay
             variants={mainMenuVariants}
             initial="hidden"
             animate="visible"
         >
             <StyledIcon src={'/icons/clubs.svg'} variants={itemVariants} />
-            <motion.h1 variants={itemVariants} >Eleven</motion.h1>
+            <StyledTitle variants={itemVariants} >Eleven</StyledTitle>
             <StyledActions variants={itemVariants}>
                 {gameInProgress &&
                     <Button
-                        text={"BACK TO GAME"}
+                        text={"RESUME GAME"}
                         color={'linear-gradient(120deg, #f6d365 0%, #ffee58 100%)'}
                         onClick={() => elevenActorRef.send({ type: 'user.closeMenu' })}
                     />
@@ -74,7 +103,7 @@ export default function MainMenu() {
                 <Button
                     text={"NEW GAME"}
                     color={'linear-gradient(-225deg, #DFFFCD 0%, #90F9C4 48%, #39F3BB 100%)'}
-                    onClick={() => elevenActorRef.send(gameInProgress ? { type: 'user.startNewGame'} : { type: 'user.play' })}
+                    onClick={() => elevenActorRef.send(gameInProgress ? { type: 'user.startNewGame' } : { type: 'user.play' })}
                 />
                 <Button
                     text={"RULES"}
@@ -86,7 +115,35 @@ export default function MainMenu() {
                 open={state.matches({ menu: 'rulesModal' })}
                 onClose={() => elevenActorRef.send({ type: 'user.hideRules' })}
             />
-            {/* <Confetti isPlayerScore={false} type={ConfettiType.Clubs}/> */}
+            {!state.matches({ menu: 'rulesModal'}) &&
+            <>
+                <StyledCredits
+                    layout
+                    initial={{
+                        opacity: 0
+                    }}
+                    animate={{
+                        opacity: 1,
+                        transition: {
+                            delay: initialLoad ? 1.5 : 0
+                        }
+                    }}
+                >
+                    <a
+                        href={'https://www.linkedin.com/in/roi-levi/'}
+                        target={'_blank'}
+                    >
+                        <StyledCreditsLinekdinIcon src={'/icons/linkedIn.png'} />
+                    </a>
+                    <a
+                        href={'https://github.com/roiko20/eleven-card-game'}
+                        target={'_blank'}
+                    >
+                        <StyledCreditsGitIcon src={'/icons/github.png'} />
+                    </a>
+                </StyledCredits>
+            </>
+            }
         </StyledOverlay>
     )
 }

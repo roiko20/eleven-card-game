@@ -10,7 +10,7 @@ export enum ConfettiType {
     Clubs = 'Clubs'
 }
 
-interface ConfettiProps {
+interface ScoreConfettiProps {
     isPlayerScore: boolean;
     type: ConfettiType;
 }
@@ -23,6 +23,7 @@ const ConfettiIcon = styled(motion.img)`
     position: absolute;
     width: 3rem;
     z-index: 100;
+    pointer-events: none;
 `;
 
 const getConfettiAnimation = (index: number, isPlayerScore = false, isMdScreen: boolean, type: ConfettiType) => {
@@ -42,7 +43,7 @@ const getConfettiAnimation = (index: number, isPlayerScore = false, isMdScreen: 
     };
 };
 
-export default function ScoreConfetti({isPlayerScore, type = ConfettiType.Clubs} : ConfettiProps) {
+export default function ScoreConfetti({isPlayerScore, type = ConfettiType.Clubs} : ScoreConfettiProps) {
     const theme = useContext(ThemeContext);
 
     const getIconsArray = (type: ConfettiType) => {

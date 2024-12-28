@@ -91,9 +91,10 @@ function App() {
         {state.matches('menu') &&
           <MainMenu />
         }
-        {state.matches('startGame') &&
+        {(state.matches('startGame') || state.matches('gameOver')) &&
           <GameBoard onMenuClick={() => console.log('menu')}/>
         }
+        {state.matches('newGame') && <Loader />}
     </ThemeProvider>
   );
 }

@@ -135,6 +135,10 @@ export const getCardScore = (card: CardType): number => {
 }
 
 const isNonRankedCardAvailable = (cards: CardType[]): boolean => {
+  console.log('cards');
+  console.log(cards);
+  console.log('is non ranked card available?');
+  console.log(cards.some((card) => getCardRank(card) === 0));
   return cards.some((card) => getCardRank(card) === 0)
 }
 
@@ -251,9 +255,11 @@ export const getBestMove = (hand: CardType[], flop: CardType[], isLastHand: bool
         // get jack move rank
         const jackMoveRank = getMoveRank([cardInHand, ...nonRoyaltyCards]);
         // add jack move if it's greater than jack rank (1)
-        // or, some non-ranked card is available to drop instead
-        // prefer to save jack move for later - player might drop ranked cards
-        if (jackMoveRank > 1 || isNonRankedCardAvailable(hand))
+        // or, if there aren't any non-ranked cards available to drop in hand instead.
+        // prefer to save jack move for later - player might drop ranked cards worth picking up
+        console.log('jack move rank:');
+        console.log(jackMoveRank);
+        if (jackMoveRank > 1 || !isNonRankedCardAvailable(hand))
         validMoves.push({
           handCard: cardInHand,
           flopCards: nonRoyaltyCards,

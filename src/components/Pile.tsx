@@ -20,7 +20,7 @@ const PileContainer = styled(motion.div)<{ $isPlayerSidePile?: boolean; }>`
 
 const PileCard = styled(motion.img)<{ index: number; $isPlayerSidePile?: boolean; }>`
     position: absolute;
-    right: ${({ index, $isPlayerSidePile }) => (`${index * ($isPlayerSidePile ? -1.35 : -0.75)}px`)};
+    right: ${({ index, $isPlayerSidePile }) => (`${index * ($isPlayerSidePile ? -1.35 : -0.7)}px`)};
     height: ${({ theme }) => (theme?.isLgScreen ? '90%' : '80%')};
     border-radius: ${({ $isPlayerSidePile }) => $isPlayerSidePile ? '8px' : '4px'};
     box-shadow: ${({ $isPlayerSidePile }) => ($isPlayerSidePile ? '1px 1px 4px #424242' : '1px 1px 2.5px #424242')};

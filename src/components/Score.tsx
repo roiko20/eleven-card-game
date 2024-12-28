@@ -16,7 +16,7 @@ const StyledScoreContainer = styled('div')<{ $isPlayerScore: boolean;}>`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: ${({ theme }) => (theme?.isMdScreen ? '8px' : '12px')};
+    gap: ${({ theme }) => (theme?.isMdScreen ? '6px' : '12px')};
     grid-row-start: ${({ $isPlayerScore }) => ($isPlayerScore && '3')};
     grid-column-start: ${({ $isPlayerScore }) => ($isPlayerScore && '1')};
 `;
@@ -33,12 +33,11 @@ const StyledScoreItem = styled('div')`
 `;
 
 const StyledScoreItemIcon = styled('img')`
-    width: ${({ theme }) => (theme?.isMdScreen ? '2rem' : '3rem')};
-    height: ${({ theme }) => (theme?.isMdScreen ? '2rem' : '3rem')};
+    width: ${({ theme }) => (theme?.isMdScreen ? '1.5rem' : '3rem')};
 `;
 
 const StyledScoreItemText = styled('span')`
-    font-size: ${({ theme }) => (theme?.isMdScreen ? '24px' : '34px')};
+    font-size: ${({ theme }) => (theme?.isMdScreen ? '22px' : '34px')};
 `;
 
 export default function Score({ isPlayerScore, points, clubs, previousClubs }: ScoreProps) {
