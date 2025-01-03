@@ -9,7 +9,7 @@ const StyledOverlay = styled(motion.div)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.1); /* Semi-transparent overlay */
+  background-color: rgba(0, 0, 0, 0.1);
 `;
 
 const StyledText = styled(motion.h1)`
@@ -53,9 +53,8 @@ export default function Loader() {
         >
           {'Loading...'.split("").map((char, index) => (
             <motion.span
-              variants={charVariants}
               key={index}
-              className="inline-block"
+              variants={charVariants}
             >
               {char}
             </motion.span>

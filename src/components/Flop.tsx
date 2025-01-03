@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import styled from "styled-components";
 import { ElevenMachineContext } from "../context/AppContext";
 import Card from "./Card";
@@ -18,7 +17,6 @@ export default function Flop() {
     const { flopCards, isPlayerTurn, playerCards, playerFlopSelection, playerHandSelection, botFlopSelection } = state.context;
 
     const showDropArea = isPlayerTurn && playerCards.length > 0;
-    // don't show drop area while player bonus
 
     const numOfItems = showDropArea ? flopCards.length + 1 : flopCards.length;
 

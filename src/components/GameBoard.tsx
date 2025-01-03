@@ -1,14 +1,11 @@
 import { useContext } from 'react';
 import { motion } from 'framer-motion';
 import styled, { ThemeContext } from 'styled-components';
-import { CardType } from '../lib';
-import Card from './Card';
 import Pile from './Pile';
 import Score from './Score';
 import Info from './Info';
 import Menu from './Menu';
 import { ElevenMachineContext } from '../context/AppContext';
-import { isCardInCards } from '../utils';
 import Flop from './Flop';
 import Confetti from './Confetti';
 import Loader from './Loader';
@@ -25,20 +22,13 @@ const GameBoardContainer = styled(motion.div)`
     row-gap: 6%;
 `;
 
-export interface GameBoardProps {
-    onMenuClick: () => void;
-}
-
-export default function GameBoard({ onMenuClick }: GameBoardProps) {
+export default function GameBoard({}) {
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
 
     const { round, isLastHand, playerSidePile, botSidePile, botPoints, botClubs, playerPoints, playerClubs, botPreviousClubs, playerPreviousClubs } = state.context;
 
     const theme = useContext(ThemeContext);
-
-    console.log('state');
-    console.log(state);
 
     if (state.matches({startGame: 'loading'})) {
         return <Loader />

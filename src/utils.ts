@@ -1,5 +1,4 @@
-import { assign } from "xstate";
-import { cardsData, soorDeck, CardType, Move } from "./lib";
+import { CardType, Move } from "./lib";
 
 export const CARDS_PREFIX_PATH = "/cards/";
 export const CARD_BACK_SVG_PATH = `${CARDS_PREFIX_PATH}BACK.svg`;
@@ -34,10 +33,7 @@ export const fetchDeck = async () => {
 export const fetchResources = async () => {
   try {
     // draw deck
-    console.log('fetching resources');
    const cards = await fetchDeck();
-    // const cards = cardsData;
-    // const cards = soorDeck;
   
     // preload SVGs
     const cardImagePromises = cards.map((card: CardType) => preloadImage(createCardSVGPath(card)));
@@ -46,6 +42,7 @@ export const fetchResources = async () => {
     await Promise.all(cardImagePromises);
 
     return cards;
+
   } catch (error) {
     console.error('Error fetching resources:', error);
     throw error;
@@ -98,7 +95,6 @@ const getCardValueByCode = (cardCode: string) => {
 }
 
 export const getCardRank = (card: CardType): number => {
-  // Clubs winner is whoever has at least 7 clubs - 13 points => each club is 13/7 = 1.85 points
   // 10 of diamonds - 3 points
   if (card.code === '0D') return 3;
   // Dudula (2 of clubs) - 2 points + club
@@ -115,9 +111,9 @@ export const getCardRank = (card: CardType): number => {
   if (cardStrChar === 'A') return 1;
   // Get the card suit value
   const cardSuitStrChar = card.code.charAt(1);
-  // club is 1.85 points (13/7)
+  // Clubs winner is whoever has at least 7 clubs - 13 points => each club is 13/7 = 1.85 points
   if (cardSuitStrChar === 'C') return 1.85;
-  // no points for other cards
+  // No rank for other cards
   return 0;
 }
 
@@ -135,10 +131,6 @@ export const getCardScore = (card: CardType): number => {
 }
 
 const isNonRankedCardAvailable = (cards: CardType[]): boolean => {
-  console.log('cards');
-  console.log(cards);
-  console.log('is non ranked card available?');
-  console.log(cards.some((card) => getCardRank(card) === 0));
   return cards.some((card) => getCardRank(card) === 0)
 }
 
@@ -169,36 +161,23 @@ const getCardsValuesSum = (cards: CardType[]) => {
 }
 
 export const isValidMove = (playerHandCard: CardType | null, flopCards: CardType[]) => {
-  console.log('in is valid move');
   // some player card must be selected
   if (!playerHandCard) {
-    console.log('return false - no hand card selected');
     return false;
   }
-  // jack hand card played - pick up all flop cards except kings and queens
-  // if (isValidJackMove(playerHandCard, flopCards)) {
-  //   //handle Jack Move
-  //   console.log('return true - valid jack selection');
-  //   return true;
-  // }
   // some flop cards must be selected too
   if (flopCards.length === 0) {
-    console.log('return false - no flop cards selected');
     return false;
   }
   // king/queen selection
   if (playerHandCard?.value === 'QUEEN' || playerHandCard?.value === 'KING') {
-    console.log('royalty selected, return:');
-    console.log(flopCards.length === 1 && playerHandCard.value === flopCards[0].value);
     return flopCards.length === 1 && playerHandCard.value === flopCards[0].value;
   }
   // sum of eleven selection
   if (getCardsValuesSum([playerHandCard, ...flopCards]) === 11) {
-    console.log('return true - sum of 11');
     return true;
   }
   // invalid move
-  console.log('return false');
   return false;
 }
 
@@ -230,11 +209,9 @@ export const getBestMove = (hand: CardType[], flop: CardType[], isLastHand: bool
         flopCards: pickedCards.slice(1),
         scoreRank: getMoveRank(pickedCards),
       });
-      // foundValidMove = true;
-      // return; // Terminate the recursion for this starting card
     }
 
-    if (remainingFlop.length === 0) return; // Terminate the recursion if no more cards
+    if (remainingFlop.length === 0) return;
 
     for (let i = 0; i < remainingFlop.length; i++) {
       const cardToCheck = remainingFlop[i];
@@ -250,12 +227,12 @@ export const getBestMove = (hand: CardType[], flop: CardType[], isLastHand: bool
     // check jack move
     if (cardInHand.value === 'JACK') {
       const nonRoyaltyCards = selectCardsByRoyalty(flop, false);
-      // jack pick up is allowed only if there are non-royality cards in flop
+      // jack pick up is allowed only if there is at least one non-royality card in flop
       if (nonRoyaltyCards.length > 0) {
         // get jack move rank
         const jackMoveRank = getMoveRank([cardInHand, ...nonRoyaltyCards]);
         // add jack move if it's greater than jack rank (1)
-        // or, if there aren't any non-ranked cards available to drop in hand instead.
+        // or, if there aren't any non-ranked cards available to drop from hand instead.
         // prefer to save jack move for later - player might drop ranked cards worth picking up
         console.log('jack move rank:');
         console.log(jackMoveRank);
@@ -283,9 +260,6 @@ export const getBestMove = (hand: CardType[], flop: CardType[], isLastHand: bool
       pickCardsFromFlop([cardInHand], flop);
     }
   }
-
-  console.log('valid moves:');
-  console.log(validMoves);
 
   // no moves found
   if (validMoves.length === 0) {

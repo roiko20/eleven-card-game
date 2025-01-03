@@ -19,7 +19,7 @@ export default function BotHand() {
                 <Card
                     key={card.code}
                     card={card}
-                    // showBack={card.code !== botHandSelection?.code}
+                    showBack={card.code !== botHandSelection?.code}
                     index={index}
                     selected={card.code === botHandSelection?.code}
                     numImages={botCards.length}

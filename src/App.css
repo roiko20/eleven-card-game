@@ -2,8 +2,6 @@
 
 body {
   margin: 0;
-  /* background: rgb(64,124,55);
-  background: linear-gradient(90deg, rgba(64,124,55,1) 0%, rgba(89,150,86,1) 50%, rgba(64,124,55,1) 100%); */
   background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%);
   font-family: "Patua One", serif;
 }

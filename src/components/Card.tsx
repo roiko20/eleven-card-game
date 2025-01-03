@@ -33,16 +33,6 @@ const getCardAnimation = (index: number, selected: boolean, isPlayerTurn: boolea
         zIndex: 10,
         cursor: 'grab'
      }
-      // return {
-      //   scale: 1,
-      //   opacity: 1,
-      //   x: 0,
-      //   y: -15,
-      //   transition: {
-      //     duration: 0.5,
-      //     delay: 0.5
-      //   }
-      // }
     }
     return {
       scale: 1,
