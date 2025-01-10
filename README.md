@@ -1,5 +1,7 @@
 # Eleven <img src="./public/icons/clubs.svg" alt="Clubs logo" width="34" height="34">
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
