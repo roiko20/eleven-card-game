@@ -3,8 +3,6 @@
 Are you ready master the art of eleven?  
 Match cards to outplay the bot in a race to 104 points!
 
-Challenge accepted? <img src="./public/icons/bot.png" alt="bot" width="26" height="26">
-
 [Play now!](https://linkHere)
 
 ## Rules
