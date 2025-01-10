@@ -20,7 +20,7 @@ On your turn, play one of your hand cards with one or more flop cards to collect
 
 **Example moves:**
 - Play a 5, collect a 6 from the flop.
-- Play a 3, collect a 7 and an Ace from the flop.
+- Play a 3, collect a 7 and an Ace from the flop.  
 If no moves are available, drop a card.  
 At the end of each round, the last player to collect flop cards gets all remaining flop cards.
 
