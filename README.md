@@ -18,7 +18,7 @@ On your turn, play one of your hand cards with one or more flop cards to collect
 <img src="./public/icons/queen.png" alt="queen" width="26" height="26"> Queen collects Queen.  
 <img src="./public/icons/prince.png" alt="prince" width="26" height="26"> Jack collects all flop cards except Kings and Queens.  
 
-**Example moves:**  
+**Example moves:**
 - Play a 5, collect a 6 from the flop.
 - Play a 3, collect a 7 and an Ace from the flop.
 If no moves are available, drop a card.  
