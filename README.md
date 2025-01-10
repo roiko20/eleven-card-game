@@ -36,11 +36,11 @@ At the end of each round, the last player to collect flop cards gets all remaini
 <img src="./public/icons/joker.png" alt="joker" width="26" height="26"> **Bonus** - clear the flop (except for the last round, not using a jack) - 5 points.
 
 ## What's inside
-- ![React](https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg) [React](https://react.dev/) for building interactive UIs.
-- ![TypeScript](https://upload.wikimedia.org/wikipedia/commons/4/4e/TypeScript_logo_2020.svg) [TypeScript](https://www.typescriptlang.org/) for type safety.
-- ![XState](https://xstate.js.org/img/xstate-logo.svg) [XState](https://xstate.js.org/) for managing game state.
-- ![Framer Motion](https://upload.wikimedia.org/wikipedia/commons/1/18/Framer_Motion_logo.svg) [Framer Motion](https://motion.dev/) for animations and transitions.
-- ![Styled Components](https://upload.wikimedia.org/wikipedia/commons/d/d7/Styled-components-logo.png) [Styled-Components](https://styled-components.com/) for component-level styling.
+<img src="https://react.dev/favicon-32x32.png" alt="react" width="26" height="26"> [React](https://react.dev/) for UI components.
+<img src="https://www.typescriptlang.org/favicon-32x32.png" alt="typescript" width="26" height="26"> [TypeScript](https://www.typescriptlang.org/) for type safety.
+<img src="https://stately.ai/icon.svg" alt="xstate" width="26" height="26"> [XState](https://xstate.js.org/) for managing game state.
+<img src="https://framerusercontent.com/images/FEF0Xp0qllCZsG1uilpmdZAzD8.png" alt="framer motion" width="26" height="26"> [Framer Motion](https://motion.dev/) for smooth animations.
+<img src="https://styled-components.com/favicon.png" alt="framer motion" width="26" height="26"> [Styled-Components](https://styled-components.com/) for components styling.
 
 ## Development
 Install [NodeJS](https://nodejs.org/en/download/).
