@@ -3,13 +3,13 @@
 Are you ready master the art of eleven?  
 Match cards to outplay the bot in a race to 104 points!
 
-Challenge accepted? <img src="./public/icons/bot.png" alt="bot" width="26" height="26">  
+Challenge accepted? <img src="./public/icons/bot.png" alt="bot" width="26" height="26">
+
 [Play now!](https://linkHere)
 
 ## Rules
 
-**Objective**  
-<img src="./public/icons/points.png" alt="points" width="26" height="26"> Collect flop cards and be the first to score 104 points!
+**Objective**: <img src="./public/icons/points.png" alt="points" width="26" height="26"> Collect flop cards and be the first to score 104 points!
 
 ### Gameplay
 On your turn, play one of your hand cards with one or more flop cards to collect them:
