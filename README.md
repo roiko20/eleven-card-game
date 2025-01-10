@@ -2,7 +2,6 @@
 
 Are you ready to master the art of eleven?  
 Match cards to outplay the bot in a race to 104 points!  
-<img src="./public/icons/clubsCoin.png" alt="clubs coin" width="26" height="26"> It takes more than luck!  
 [Play here!](https://linkHere)
 
 ## Rules
