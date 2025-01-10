@@ -132,12 +132,14 @@ export default function MainMenu() {
                     <a
                         href={'https://www.linkedin.com/in/roi-levi/'}
                         target={'_blank'}
+                        rel="noreferrer noopener"
                     >
                         <StyledCreditsLinekdinIcon src={'/icons/linkedIn.png'} />
                     </a>
                     <a
                         href={'https://github.com/roiko20/eleven-card-game'}
                         target={'_blank'}
+                        rel="noreferrer noopener"
                     >
                         <StyledCreditsGitIcon src={'/icons/github.png'} />
                     </a>

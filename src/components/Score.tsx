@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import ScoreConfetti, { ConfettiType } from './ScoreConfetti';
 import { ElevenMachineContext } from '../context/AppContext';

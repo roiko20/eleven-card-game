@@ -22,7 +22,7 @@ const GameBoardContainer = styled(motion.div)`
     row-gap: 6%;
 `;
 
-export default function GameBoard({}) {
+export default function GameBoard() {
     const elevenActorRef = ElevenMachineContext.useActorRef();
     const state = ElevenMachineContext.useSelector((state) => state);
 
