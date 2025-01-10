@@ -1,6 +1,6 @@
 # <img src="./public/icons/clubs.svg" alt="Clubs logo" width="34" height="34"> Eleven
 
-Are you ready to master the art of eleven?  
+Are you ready to master the art of 11?  
 Match cards to outplay the bot in a race to 104 points!
 
 [Play here!](https://linkHere)
