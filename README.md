@@ -1,4 +1,4 @@
-# Eleven <img src="./public/icons/clubs.svg" alt="Clubs logo" width="34" height="34">
+# <img src="./public/icons/clubs.svg" alt="Clubs logo" width="34" height="34"> Eleven
 
 Are you ready master the art of eleven?  
 Match cards to outplay the bot in a race to 104 points!
@@ -36,11 +36,11 @@ At the end of each round, the last player to collect flop cards gets all remaini
 <img src="./public/icons/joker.png" alt="joker" width="26" height="26"> **Bonus** - clear the flop (except for the last round, not using a jack) - 5 points.
 
 ## What's inside
-<img src="https://react.dev/favicon-32x32.png" alt="react" width="24" height="24"> [React](https://react.dev/) for UI components.  
-<img src="https://www.typescriptlang.org/favicon-32x32.png" alt="typescript" width="24" height="24"> [TypeScript](https://www.typescriptlang.org/) for type safety.  
-<img src="https://stately.ai/icon.svg" alt="xstate" width="24" height="24"> [XState](https://xstate.js.org/) for managing game state.  
-<img src="https://framerusercontent.com/images/FEF0Xp0qllCZsG1uilpmdZAzD8.png" alt="framer motion" width="24" height="24"> [Framer Motion](https://motion.dev/) for smooth animations.  
-<img src="https://styled-components.com/favicon.png" alt="framer motion" width="24" height="24"> [Styled-Components](https://styled-components.com/) for components styling.
+- <img src="https://react.dev/favicon-32x32.png" alt="react" width="24" height="24"> [React](https://react.dev/) for UI components.
+- <img src="https://www.typescriptlang.org/favicon-32x32.png" alt="typescript" width="24" height="24"> [TypeScript](https://www.typescriptlang.org/) for type safety.
+- <img src="https://stately.ai/icon.svg" alt="xstate" width="24" height="24"> [XState](https://xstate.js.org/) for managing game state.
+- <img src="https://framerusercontent.com/images/FEF0Xp0qllCZsG1uilpmdZAzD8.png" alt="framer motion" width="24" height="24"> [Framer Motion](https://motion.dev/) for smooth animations.
+- <img src="https://styled-components.com/favicon.png" alt="framer motion" width="24" height="24"> [Styled-Components](https://styled-components.com/) for components styling.
 
 ## Development
 Install [NodeJS](https://nodejs.org/en/download/).
