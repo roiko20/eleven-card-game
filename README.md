@@ -11,7 +11,7 @@ Match cards to outplay the bot in a race to 104 points!
 <img src="./public/icons/points.png" alt="points" width="26" height="26"> Collect flop cards and be the first to score 104 points!
 
 ### Gameplay
-On your turn, play one of your hand cards with one or more flop cards to collect them:
+On your turn, play one of your hand cards with one or more flop cards to collect them:  
 <img src="./public/icons/eleven.png" alt="eleven" width="26" height="26"> Create a sum of 11 with your selected card and flop cards to collect.  
 <img src="./public/icons/king.png" alt="king" width="26" height="26"> King collects King.  
 <img src="./public/icons/queen.png" alt="queen" width="26" height="26"> Queen collects Queen.  
