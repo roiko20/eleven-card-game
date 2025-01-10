@@ -1,11 +1,10 @@
 # Eleven <img src="./public/icons/clubs.svg" alt="Clubs logo" width="34" height="34">
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Code size in bytes](https://img.shields.io/github/languages/code-size/roiko20/eleven-card-game)
+Can you master the art of eleven?  
+Match cards to outplay the bot in a race to 104 points!
 
-A fast-paced card game where you race to 104 points by collecting flop cards and outsmarting your bot opponent.<br/>
-Play your cards wisely, create sums of 11, match Kings or queens, or use your Jack to grab all cards!<br/>
-Sounds easy? <img src="./public/icons/bot.png" alt="bot" width="24" height="24"> [Let's play!][https://linkHere]
+Challenge accepted? <img src="./public/icons/bot.png" alt="bot" width="24" height="24">  
+[Play now!](https://linkHere)
 
 ## Rules
 
@@ -22,12 +21,12 @@ On your turn, play one of your hand cards with one or more flop cards to collect
 #### Example moves:
 - Play a 5, collect a 6 from the flop.
 - Play a 3, collect a 7 and an Ace from the flop.
-If no moves are available, drop a card.
+If no moves are available, drop a card.  
 At the end of each round, the last player to collect flop cards gets all remaining flop cards.
 
 ### Round Scoring
 26 points are available each round:
-- <img src="./public/icons/club.png" alt="club" width="24" height="24"> Collect most club suit cards (7+ clubs) - 13 points.
+- <img src="./public/icons/clubs.svg" alt="clubs" width="24" height="24"> Collect most club suit cards (7+ clubs) - 13 points.
 - <img src="./public/icons/10ofDiamonds.png" alt="10 of diamonds" width="24" height="24"> Ten of diamonds - 3 points.
 - <img src="./public/icons/2ofClubs.png" alt="10 of diamonds" width="24" height="24"> Two of clubs - 2 points.
 - <img src="./public/icons/jack.png" alt="jack" width="24" height="24"> Jack (any suit) - 1 point.
@@ -35,19 +34,21 @@ At the end of each round, the last player to collect flop cards gets all remaini
 - <img src="./public/icons/joker.png" alt="joker" width="24" height="24"> **Bonus** - clear the flop (except for the last round, not using a jack) - 5 points.
 
 ## What's inside
-- **React** + **Framer Motion** for seamless animations.
-- **TypeScript** for robust type safety.
-- **XState** for managing the game state and keeping things under control.
+- [React](https://react.dev/) for UI components.
+- [TypeScript](https://www.typescriptlang.org/) for type safety.
+- [XState](https://xstate.js.org/) for managing game state.
+- [Framer Motion](https://motion.dev/) for smooth animations.
+- [Styled-Components](https://styled-components.com/) for components styling.
 
 ## Development
 Install [NodeJS](https://nodejs.org/en/download/).
     ```bash
-    git clone https://github.com/roiko20/eleven-card-game
-    cd eleven-card-game
-    npm install
-    npm run watch
+    git clone https://github.com/roiko20/eleven-card-game  
+    cd eleven-card-game  
+    npm install  
+    npm run watch  
     ```
 Visit [localhost:3000](http://localhost:3000)
 
-## License
-This project is licensed under the MIT License. See [LICENSE](./LICENSE) for details
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Code size in bytes](https://img.shields.io/github/languages/code-size/roiko20/eleven-card-game)
