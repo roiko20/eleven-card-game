@@ -16,13 +16,14 @@ On your turn, play one of your hand cards with one or more flop cards to collect
 <img src="./public/icons/eleven.png" alt="eleven" width="26" height="26"> Create a sum of 11 with your selected card and flop cards to collect.  
 <img src="./public/icons/king.png" alt="king" width="26" height="26"> King collects King.  
 <img src="./public/icons/queen.png" alt="queen" width="26" height="26"> Queen collects Queen.  
-<img src="./public/icons/prince.png" alt="prince" width="26" height="26"> Jack collects all flop cards except Kings and Queens.  
+<img src="./public/icons/prince.png" alt="prince" width="26" height="26"> Jack collects all flop cards except Kings and Queens.
+
+If no moves are available, drop a card.  
+At the end of each round, the last player to collect flop cards gets all remaining flop cards.
 
 **Example moves:**
 - Play a 5, collect a 6 from the flop.
-- Play a 3, collect a 7 and an Ace from the flop.  
-If no moves are available, drop a card.  
-At the end of each round, the last player to collect flop cards gets all remaining flop cards.
+- Play a 3, collect a 7 and an Ace from the flop.
 
 ### Round Scoring
 26 points are available each round:
