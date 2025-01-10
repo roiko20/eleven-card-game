@@ -52,8 +52,7 @@ Install [NodeJS](https://nodejs.org/en/download/).
     npm install
 
     npm run watch
-Visit [localhost:3000](http://localhost:3000)
-
+Visit [localhost:3000](http://localhost:3000)  
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Code size in bytes](https://img.shields.io/github/languages/code-size/roiko20/eleven-card-game)
