@@ -36,11 +36,11 @@ At the end of each round, the last player to collect flop cards gets all remaini
 <img src="./public/icons/joker.png" alt="joker" width="26" height="26"> **Bonus** - clear the flop (except for the last round, not using a jack) - 5 points.
 
 ## What's inside
-- [React](https://react.dev/) for UI components.
-- [TypeScript](https://www.typescriptlang.org/) for type safety.
-- [XState](https://xstate.js.org/) for managing game state.
-- [Framer Motion](https://motion.dev/) for smooth animations.
-- [Styled-Components](https://styled-components.com/) for components styling.
+- ![React](https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg) [React](https://react.dev/) for building interactive UIs.
+- ![TypeScript](https://upload.wikimedia.org/wikipedia/commons/4/4e/TypeScript_logo_2020.svg) [TypeScript](https://www.typescriptlang.org/) for type safety.
+- ![XState](https://xstate.js.org/img/xstate-logo.svg) [XState](https://xstate.js.org/) for managing game state.
+- ![Framer Motion](https://upload.wikimedia.org/wikipedia/commons/1/18/Framer_Motion_logo.svg) [Framer Motion](https://motion.dev/) for animations and transitions.
+- ![Styled Components](https://upload.wikimedia.org/wikipedia/commons/d/d7/Styled-components-logo.png) [Styled-Components](https://styled-components.com/) for component-level styling.
 
 ## Development
 Install [NodeJS](https://nodejs.org/en/download/).
