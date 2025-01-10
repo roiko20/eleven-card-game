@@ -46,16 +46,16 @@ At the end of each round, the last player to collect flop cards gets all remaini
 Install [NodeJS](https://nodejs.org/en/download/).
     ```
     git clone https://github.com/roiko20/eleven-card-game
-    ```
+    ```  
     ```
     cd eleven-card-game
     ```
-    ```
+    ``` 
     npm install
     ```
-    ```
+    ```  
     npm run watch
-    ```
+    ```  
 Visit [localhost:3000](http://localhost:3000)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
