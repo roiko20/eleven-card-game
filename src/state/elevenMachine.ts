@@ -1,9 +1,19 @@
 import { and, assertEvent, assign, fromPromise, not, or, setup } from 'xstate';
 import { CardType } from "../lib";
-// import { RickCharacters } from './services/RickApi';
-// import { getRandomNumber } from './common/constants';
-import { compareCards, dealCards, fetchDeck, fetchResources, getBestCardToDrop, getBestMove, getCardScore, getCardsScore, getNumOfClubs, isCardInCards, isValidJackMove, isValidMove, removeCardsFromCards, selectCardsByRoyalty, shuffleDeck } from '../utils';
-import { Context } from 'react-responsive';
+import { compareCards,
+         dealCards,
+         fetchResources,
+         getBestCardToDrop,
+         getBestMove,
+         getCardsScore,
+         getNumOfClubs,
+         isCardInCards,
+         isValidJackMove,
+         isValidMove,
+         removeCardsFromCards,
+         selectCardsByRoyalty,
+         shuffleDeck
+        } from '../utils';
 
 interface ElevenContext {
   cards: CardType[];
@@ -277,18 +287,14 @@ const elevenMachine = setup({
   guards: {
     hasLoaded: ({ context }) => context.hasLoaded,
     isPlayerHandCardSelected: ({ context }) => !!context.playerHandSelection,
-    isValidMove: ({ context, event }) => {
-      // assertEvent(event, 'user.selectAnswer');
+    isValidMove: ({ context }) => {
       return isValidMove(context.playerHandSelection, context.playerFlopSelection);
     },
     isValidJackMove: ({ context }) => isValidJackMove(context.playerHandSelection, context.flopCards),
     isBonusMove: ({ context }) => context.flopCards.length === 0 && !context.isLastHand && context.lastPlayedHandCard?.value !== 'JACK',
-    // isBotMostClubsMove: ({ context }) => context.botPreviousClubs < 7 && context.botClubs >= 7,
-    // isPlayerMostClubsMove: ({ context }) => context.playerPreviousClubs < 7 && context.playerClubs >= 7,
     isRoundOverWithRemainingFlop: ({ context }) => context.isLastHand && context.flopCards.length > 0 && context.botCards.length === 0 && context.playerCards.length === 0,
     isRoundOver: ({ context }) => context.isLastHand && context.botCards.length === 0 && context.playerCards.length === 0,
     isHandOver: ({ context }) => context.botCards.length === 0 && context.playerCards.length === 0,
-    // isLastHand: ({ context }) => context.isLastHand,
     hasWonGame: ({ context }) => {
       return context.playerPoints >= 104;
     },
@@ -324,7 +330,7 @@ const elevenMachine = setup({
     isLastHand: false,
     lastPlayedHandCard: null,
     isPlayerLastToCollect: false,
-    playerPoints: 103,
+    playerPoints: 0,
     playerPreviousClubs: 0,
     playerClubs: 0,
     playerCards: [],
