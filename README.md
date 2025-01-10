@@ -1,4 +1,4 @@
-# <img src="./public/icons/clubs.svg" alt="Clubs logo" width="34" height="34"> Eleven
+# Eleven <img src="./public/icons/clubs.svg" alt="Clubs logo" width="34" height="34">
 
 Are you ready to master the art of 11?  
 Match cards to outplay the bot in a race to 104 points!
