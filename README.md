@@ -3,8 +3,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Code size in bytes](https://img.shields.io/github/languages/code-size/roiko20/eleven-card-game)
 
-A fast-paced card game where you race to 104 points by collecting flop cards and outsmarting your bot opponent.
-Play your cards wisely, create sums of 11, match Kings or queens, or use your Jack to grab all cards!
+A fast-paced card game where you race to 104 points by collecting flop cards and outsmarting your bot opponent.<br/>
+Play your cards wisely, create sums of 11, match Kings or queens, or use your Jack to grab all cards!<br/>
 Sounds easy? <img src="./public/icons/bot.png" alt="bot" width="24" height="24"> [Let's play!][https://linkHere]
 
 ## Rules
