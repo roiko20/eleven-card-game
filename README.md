@@ -7,10 +7,10 @@ Match cards to outplay the bot in a race to 104 points!
 
 ## Rules
 
-### Objective
+#### Objective
 <img src="./public/icons/points.png" alt="points" width="26" height="26"> Collect flop cards and be the first to score 104 points!
 
-### Gameplay
+#### Gameplay
 On your turn, play one of your hand cards with one or more flop cards to collect them:
 
 <img src="./public/icons/eleven.png" alt="eleven" width="26" height="26"> Create a sum of 11 with your selected card and flop cards to collect.  
@@ -25,7 +25,7 @@ At the end of each round, the last player to collect flop cards gets all remaini
 - Play a 5, collect a 6 from the flop.
 - Play a 3, collect a 7 and an Ace from the flop.
 
-### Round Scoring
+#### Round Scoring
 26 points are available each round:
 
 <img src="./public/icons/clubs.svg" alt="clubs" width="26" height="26"> Collect most club suit cards (7+ clubs) - 13 points.  
