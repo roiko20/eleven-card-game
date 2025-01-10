@@ -43,7 +43,7 @@ At the end of each round, the last player to collect flop cards gets all remaini
 <img src="https://avatars.githubusercontent.com/u/20658825" alt="styled components" width="24" height="24"> [ Styled-Components](https://styled-components.com/) for components styling.  
 
 ## Development
-Install [NodeJS](https://nodejs.org/en/download/).  
+Install [NodeJS](https://nodejs.org/en/download/)  
 
     git clone https://github.com/roiko20/eleven-card-game
 
