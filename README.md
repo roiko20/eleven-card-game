@@ -1,4 +1,4 @@
-# Eleven <img src="./public/icons/clubs.svg" alt="Clubs logo" width="32" height="32">
+# Eleven <img src="./public/icons/clubs.svg" alt="Clubs logo" width="36" height="36">
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
