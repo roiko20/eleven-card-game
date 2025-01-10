@@ -3,71 +3,51 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Code size in bytes](https://img.shields.io/github/languages/code-size/roiko20/eleven-card-game)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A fast-paced card game where you race to 104 points by collecting flop cards and outsmarting your bot opponent.
+Play your cards wisely, create sums of 11, match Kings or queens, or use your Jack to grab all cards!
+Sounds easy? <img src="./public/icons/bot.png" alt="bot" width="24" height="24"> [Let's play!][https://linkHere]
 
-## Available Scripts
+## Rules
 
-In the project directory, you can run:
+### Objective
+<img src="./public/icons/points.png" alt="points" width="24" height="24"> Collect flop cards and be the first to score 104 points!
 
-### `npm start`
+### Gameplay
+On your turn, play one of your hand cards with one or more flop cards to collect them:
+- <img src="./public/icons/eleven.png" alt="eleven" width="24" height="24"> Create a sum of 11 with your selected card and flop cards to collect.
+- <img src="./public/icons/king.png" alt="king" width="24" height="24"> King collects King.
+- <img src="./public/icons/queen.png" alt="queen" width="24" height="24"> Queen collects Queen.
+- <img src="./public/icons/prince.png" alt="prince" width="24" height="24"> Jack collects all flop cards except Kings and Queens.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+#### Example moves:
+- Play a 5, collect a 6 from the flop.
+- Play a 3, collect a 7 and an Ace from the flop.
+If no moves are available, drop a card.
+At the end of each round, the last player to collect flop cards gets all remaining flop cards.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Round Scoring
+26 points are available each round:
+- <img src="./public/icons/club.png" alt="club" width="24" height="24"> Collect most club suit cards (7+ clubs) - 13 points.
+- <img src="./public/icons/10ofDiamonds.png" alt="10 of diamonds" width="24" height="24"> Ten of diamonds - 3 points.
+- <img src="./public/icons/2ofClubs.png" alt="10 of diamonds" width="24" height="24"> Two of clubs - 2 points.
+- <img src="./public/icons/jack.png" alt="jack" width="24" height="24"> Jack (any suit) - 1 point.
+- <img src="./public/icons/ace.png" alt="ace" width="24" height="24"> Ace (any suit) - 1 point.
+- <img src="./public/icons/joker.png" alt="joker" width="24" height="24"> **Bonus** - clear the flop (except for the last round, not using a jack) - 5 points.
 
-### `npm test`
+## What's inside
+- **React** + **Framer Motion** for seamless animations.
+- **TypeScript** for robust type safety.
+- **XState** for managing the game state and keeping things under control.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Development
+Install [NodeJS](https://nodejs.org/en/download/).
+    ```bash
+    git clone https://github.com/roiko20/eleven-card-game
+    cd eleven-card-game
+    npm install
+    npm run watch
+    ```
+Visit [localhost:3000](http://localhost:3000)
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## License
+This project is licensed under the MIT License. See [LICENSE](./LICENSE) for details
