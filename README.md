@@ -7,7 +7,7 @@ Match cards to outplay the bot in a race to 104 points!
 
 ## Rules
 
-**Objective**:  
+### Objective
 <img src="./public/icons/points.png" alt="points" width="26" height="26"> Collect flop cards and be the first to score 104 points!
 
 ### Gameplay
