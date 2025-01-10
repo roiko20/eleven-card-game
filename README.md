@@ -26,12 +26,13 @@ At the end of each round, the last player to collect flop cards gets all remaini
 
 ### Round Scoring
 26 points are available each round:
-- <img src="./public/icons/clubs.svg" alt="clubs" width="26" height="26"> Collect most club suit cards (7+ clubs) - 13 points.
-- <img src="./public/icons/10ofDiamonds.png" alt="10 of diamonds" width="26" height="26"> Ten of diamonds - 3 points.
-- <img src="./public/icons/2ofClubs.png" alt="10 of diamonds" width="26" height="26"> Two of clubs - 2 points.
-- <img src="./public/icons/jack.png" alt="jack" width="26" height="26"> Jack (any suit) - 1 point.
-- <img src="./public/icons/ace.png" alt="ace" width="26" height="26"> Ace (any suit) - 1 point.
-- <img src="./public/icons/joker.png" alt="joker" width="26" height="26"> **Bonus** - clear the flop (except for the last round, not using a jack) - 5 points.
+
+<img src="./public/icons/clubs.svg" alt="clubs" width="26" height="26"> Collect most club suit cards (7+ clubs) - 13 points.  
+<img src="./public/icons/10ofDiamonds.png" alt="10 of diamonds" width="26" height="26"> Ten of diamonds - 3 points.  
+<img src="./public/icons/2ofClubs.png" alt="10 of diamonds" width="26" height="26"> Two of clubs - 2 points.  
+<img src="./public/icons/jack.png" alt="jack" width="26" height="26"> Jack (any suit) - 1 point.  
+<img src="./public/icons/ace.png" alt="ace" width="26" height="26"> Ace (any suit) - 1 point.  
+<img src="./public/icons/joker.png" alt="joker" width="26" height="26"> **Bonus** - clear the flop (except for the last round, not using a jack) - 5 points.
 
 ## What's inside
 - [React](https://react.dev/) for UI components.
