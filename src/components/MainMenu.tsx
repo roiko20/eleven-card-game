@@ -134,7 +134,7 @@ export default function MainMenu() {
                         target={'_blank'}
                         rel="noreferrer noopener"
                     >
-                        <StyledCreditsLinekdinIcon src={'/icons/linkedIn.png'} />
+                        <StyledCreditsLinekdinIcon src={'/icons/linkedin.png'} />
                     </a>
                     <a
                         href={'https://github.com/roiko20/eleven-card-game'}

@@ -121,16 +121,6 @@
       "src": "/icons/hat2.png",
       "type": "image/png",
       "sizes": "192x192"
-    },
-    {
-      "src": "/icons/linkedin.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "/icons/github.png",
-      "type": "image/png",
-      "sizes": "192x192"
     }
   ],
   "start_url": ".",

@@ -11,6 +11,8 @@ function App() {
   const screenSize = useScreenSize();
   const state = ElevenMachineContext.useSelector((state) => state);
 
+  console.log('here');
+
   return (
     <ThemeProvider theme={{ ...screenSize }}>
        {screenSize.isSmScreen && <Tilt/>}
