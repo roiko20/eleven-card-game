@@ -6,12 +6,11 @@ import { ThemeProvider } from 'styled-components';
 import Tilt from './components/Tilt';
 import Loader from './components/Loader';
 import { ElevenMachineContext } from './context/AppContext';
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
   const screenSize = useScreenSize();
   const state = ElevenMachineContext.useSelector((state) => state);
-
-  console.log('here');
 
   return (
     <ThemeProvider theme={{ ...screenSize }}>
@@ -25,6 +24,7 @@ function App() {
         {state.matches('newGame') && 
           <Loader />
         }
+        <Analytics />
     </ThemeProvider>
   );
 }

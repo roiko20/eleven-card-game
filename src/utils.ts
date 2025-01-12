@@ -234,8 +234,6 @@ export const getBestMove = (hand: CardType[], flop: CardType[], isLastHand: bool
         // add jack move if it's greater than jack rank (1)
         // or, if there aren't any non-ranked cards available to drop from hand instead.
         // prefer to save jack move for later - player might drop ranked cards worth picking up
-        console.log('jack move rank:');
-        console.log(jackMoveRank);
         if (jackMoveRank > 1 || !isNonRankedCardAvailable(hand))
         validMoves.push({
           handCard: cardInHand,
