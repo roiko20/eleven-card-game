@@ -49,10 +49,8 @@ Install [NodeJS](https://nodejs.org/en/download/)
 
     cd eleven-card-game
 
-    npm install
-
-    npm run watch
-Visit [localhost:3000](http://localhost:3000)  
+    npm run dev
+Visit [localhost:3000](http://localhost:3000)
 
 ---
 
