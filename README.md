@@ -48,6 +48,8 @@ Install [NodeJS](https://nodejs.org/en/download/)
     git clone https://github.com/roiko20/eleven-card-game
 
     cd eleven-card-game
+    
+    npm install
 
     npm run dev
 Visit [localhost:3000](http://localhost:3000)
