@@ -18,7 +18,7 @@ const GameBoardContainer = styled(motion.div)`
     grid-template-rows: 22% 35% 31%;
     grid-template-columns: ${({ theme }) => (theme?.isPortrait ? '12% 88%' : '13% auto 13%')};
     box-sizing: border-box;
-    height: 100vh;
+    height: ${({ theme }) => (theme?.isMdScreen ? '90vh' : '100vh')};
     row-gap: 6%;
 `;
 

@@ -4,7 +4,4 @@ body {
   margin: 0;
   background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%);
   font-family: "Patua One", serif;
-  padding: 0;
-  height: 100vh;
-  width: 100vw;
 }
