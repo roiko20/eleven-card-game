@@ -6,7 +6,7 @@ import { ElevenMachineContext } from "../context/AppContext";
 import { useEffect, useState } from "react";
 
 const StyledOverlay = styled(motion.div)`
-    height: 100vh;
+    height: ${({ theme }) => (theme?.isMdScreen ? '90vh' : '100vh')};
     display: flex;
     gap: 8px;
     flex-direction: column;
@@ -16,7 +16,7 @@ const StyledOverlay = styled(motion.div)`
 `;
 
 const StyledTitle = styled(motion.h1)`
-    margin: 16px 0;
+    margin: ${({ theme }) => (theme?.isMdScreen ? '8px 0' : '16px 0')};
 `;
 
 const StyledActions = styled(motion.div)`

@@ -35,7 +35,7 @@ const ConfettiContainer = styled.div`
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: ${({ theme }) => (theme?.isMdScreen ? '90vh' : '100vh')};
     background-color: rgba(60, 60, 60, 0.3);
 `;
 

@@ -3,9 +3,9 @@ import styled from "styled-components";
 import ShuffleAnimation from "./ShuffleAnimation";
 
 const StyledOverlay = styled(motion.div)`
-  height: 100vh;
+  height: ${({ theme }) => (theme?.isMdScreen ? '90vh' : '100vh')};
   display: flex;
-  gap: 8px;
+  gap: ${({ theme }) => (theme?.isMdScreen ? '4px' : '8px')};
   flex-direction: column;
   justify-content: center;
   align-items: center;
